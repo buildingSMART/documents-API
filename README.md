@@ -17,6 +17,8 @@ The Documents API is an interactive way of syncing documents between client appl
 
 The Open CDE workgroup develops the BCF standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
 
+> **TODO** ToC (auto generated)
+
 # 1. Introduction
 
 ## 1.1. OpenCDE Foundation API
@@ -26,35 +28,47 @@ The foundation API specifies a small number of services and a few conventions th
 
 > Note: Other APIs built on top of the OpenCDE Foundation API include the [BCF API for the BIM Collaboration Format](https://github.com/buildingSMART/BCF-API).
 
+> **TODO** Explain how BCF-API and Documents API could be used together.
+
 # 2. Topology
 
 ![Documents API Topology](./Images/CDE_Overview_Diagram.png)
 
 > **TODO** Have a short paragraph describing the client-server setup / relationship and maybe also a short diagram, showing maybe files flowing (with arrows?) between these two.
 
+> **TODO** List use cases, also explicitly list that automatic server-to-server syncing is not part of this API. Mention also that future versions (or other APIs?) will add this feature.
+
 # 3. Services
 
-## 3.1. Document Selection
+## 3.1 Swagger Specification - How To
+
+> **TODO** Explain how to use the Swagger spec, especially with regard to the dynamic urls.
+
+> **TODO** Link the open source implementation, mention how it's supported (expect bugs, but those will be addressed)
+
+## 3.2. Document Selection
 
 > **TODO** Text description, and flow sequence diagram.
 
-### 3.1.1. Document Selection Example
+### 3.2.1. Document Selection Example
 
 > **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
 
-## 3.2. Document Download
+## 3.3. Document Download
 
 > **TODO** Text description, and flow sequence diagram.
 
-### 3.2.1. Document Download Example
+> **TODO** See <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>, we should make the _reference_ from the BCF-API be the url that is returned here for the download as to better integrate the two APIs,
+
+### 3.3.1. Document Download Example
 
 > **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
 
-## 3.3. Document Upload
+## 3.4. Document Upload
 
 > **TODO** Text description, and flow sequence diagram.
 
-### 3.3.1. Document Upload Example
+### 3.4.1. Document Upload Example
 
 > **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
 
