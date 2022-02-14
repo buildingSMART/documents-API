@@ -25,8 +25,9 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
   - [Contributing](#contributing)
 - [1. Introduction](#1-introduction)
   - [1.1. OpenCDE Foundation API](#11-opencde-foundation-api)
-  - [1.2 Using Documents API and BCF API Together](#12-using-documents-api-and-bcf-api-together)
 - [2. Overview](#2-overview)
+  - [2.1 Using Documents API and BCF API Together](#21-using-documents-api-and-bcf-api-together)
+    - [2.1.1 BCF File References](#211-bcf-file-references)
   - [Use Cases](#use-cases)
   - [How does the Document API work?](#how-does-the-document-api-work)
 - [3. Services](#3-services)
@@ -48,10 +49,6 @@ The foundation API specifies a small number of services and a few conventions th
 
 > Note: Other APIs built on top of the OpenCDE Foundation API include the [BCF API for the BIM Collaboration Format](https://github.com/buildingSMART/BCF-API).
 
-## 1.2 Using Documents API and BCF API Together
-
-Documents API and BCF API can be used at the same time in a client software that has implemented both APIs. If you are working in a project that uses a service that implements both, you can get the BIM files (e.g., IFCs) directly from the service with the Documents API and create issues about them using the BCF API. You can also have a configuration, where your documents reside in a service that only supports the Documents API and your communicate about the issues with another service that supports BCF API.
-
 # 2. Overview
 
 The Documents API identifies the following actors:
@@ -63,6 +60,37 @@ The Documents API identifies the following actors:
 ![Documents API Topology](./Images/CDE_Overview_Diagram.png)
 
 > **TODO** Replace the diagram above with an image that correctly shows the three actors described above
+
+## 2.1 Using Documents API and BCF API Together
+
+Documents API and BCF API can be used at the same time in a client software that has implemented both APIs. If you are working in a project that uses a service that implements both, you can get the BIM files (e.g., IFCs) directly from the service with the Documents API and create issues about them using the BCF API. You can also have a configuration, where your documents reside in a service that only supports the Documents API and your communicate about the issues with another service that supports BCF API.
+
+### 2.1.1 BCF File References
+
+BCF API compatible servers offer endpoints to list project model files, which are typically stored on some CDE servers. To connect the model resolution from BCF API file references with documents stored on a CDE implementing the Documents API, the `reference` part of a `file_GET` is returned by the BCF server with a specific protocol `documents` and a link to the `document_version` url on the CDE server.  
+The scheme for the actual request to obtain the document version data is assumed to be `https`.
+
+BCF API `file_GET` example:
+
+```json
+{
+  "display_information": [
+    {
+      "field_display_name": "Model Name",
+      "field_value": "ARCH-Z100-051"
+    }
+  ],
+  "file": {
+    "ifc_project": "0J$yPqHBD12v72y4qF6XcD",
+    "file_name": "OfficeBuilding_Architecture_0001.ifc",
+    "reference": "documents://<document_version_url>"
+  }
+}
+```
+
+In the example above, the BCF server returns a value of `documents://<document_version_url>` for the file `reference` part, indicating that this is an url that should be accessed with a Documents API capable client to get the document version endpoint. From there on, compatible clients can retrieve metadata and the binary content of the file.
+
+The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
 ## Use Cases
 
