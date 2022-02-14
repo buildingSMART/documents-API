@@ -13,7 +13,7 @@
 
 > **TODO** Logo😀 Need to wait for bSI to either provide one or approve the proposed logo.
 
-The Documents API is an interactive way of syncing documents between client applications and CDEs. It's specification details the _selection_ or _discovery_, _download_ and _upload_ of documents and files. When supported by both client and server, it provides an easy to use and integrated way of working on cloud stored documents from within local applications. Documents here refers to files, meaning the scope is not only limited to building models but any files.
+The Documents API is designed to streamline the process of downloading and uploading files to a common data environment (CDE). This specification details the _selection_ or _discovery_, _download_ and _upload_ of files. When supported by both client and server, it provides an easy to use and integrated way of syncing cloud stored documents from within local applications. For the purpose of this specification a Documents consists of a file and its metadata.The scope of the Documents API includes all file types; The scope is not limited to building information models.
 
 ## Contributing
 
@@ -51,7 +51,14 @@ The foundation API specifies a small number of services and a few conventions th
 Documents API and BCF API can be used at the same time in a client software that has implemented both APIs. If you are working in a project that uses a service that implements both, you can get the BIM files (e.g., IFCs) directly from the service with the Documents API and create issues about them using the BCF API. You can also have a configuration, where your documents reside in a service that only supports the Documents API and your communicate about the issues with another service that supports BCF API.
 
 
-# 2. Topology
+# 2. Overview
+
+The Documents API identifies the following actors: 
+* User - A human, performing a task requiring the download or the upload of files
+* Client Application - A desktop Application or a Web Application used by the User to perform her task
+* Common Data Environment (CDE or Server) - A cloud application hosting files for a construction project
+
+
 
 ![Documents API Topology](./Images/CDE_Overview_Diagram.png)
 
