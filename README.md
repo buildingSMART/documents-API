@@ -40,6 +40,8 @@ The foundation API specifies a small number of services and a few conventions th
 
 # 3. Services
 
+> **TODO** Mention that the spec doesn't make any assumptions about concurrency is handled, e.g. two users trying to upload a document version at the same time. Also think where to put this paragraph😀
+
 ## 3.1 Swagger Specification - How To
 
 > **TODO** Explain how to use the Swagger spec, especially with regard to the dynamic urls.
