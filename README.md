@@ -30,7 +30,10 @@ The foundation API specifies a small number of services and a few conventions th
 
 > Note: Other APIs built on top of the OpenCDE Foundation API include the [BCF API for the BIM Collaboration Format](https://github.com/buildingSMART/BCF-API).
 
-> **TODO** Explain how BCF-API and Documents API could be used together.
+> ** Using Documents API and BCF-API Together** 
+
+Documents API and BCF-API can be used at the same time in a client software that has implemented both APIs. If you are working in a project that uses a service that implements both, you can get the BIM files (e.g., IFCs) directly from the service with the Documents API and create issues about them using the BCF-API. You can also have a configuration, where your documents reside in a service that only supports the Documents API and your communicate about the issues with another service that supports BCF-API.
+
 
 # 2. Topology
 
