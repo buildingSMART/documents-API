@@ -19,7 +19,23 @@ The Documents API is an interactive way of syncing documents between client appl
 
 The Open CDE workgroup develops the BCF standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
 
-> **TODO** ToC (auto generated)
+<!-- toc  https://ecotrust-canada.github.io/markdown-toc/ -->
+- [Documents API](#documents-api)
+  * [Contributing](#contributing)
+- [1. Introduction](#1-introduction)
+  * [1.1. OpenCDE Foundation API](#11-opencde-foundation-api)
+- [2. Topology](#2-topology)
+- [3. Services](#3-services)
+  * [3.1 Swagger Specification - How To](#31-swagger-specification---how-to)
+  * [3.2. Document Selection](#32-document-selection)
+    + [3.2.1. Document Selection Example](#321-document-selection-example)
+  * [3.3. Document Download](#33-document-download)
+    + [3.3.1. Document Download Example](#331-document-download-example)
+  * [3.4. Document Upload](#34-document-upload)
+    + [3.4.1. Document Upload Example](#341-document-upload-example)
+    + [Multipart Upload Considerations & Implementation Notes](#multipart-upload-considerations---implementation-notes)
+- [4. Acknowledgements / History](#4-acknowledgements---history)
+<!-- tocstop -->
 
 # 1. Introduction
 
