@@ -9,6 +9,8 @@
 
 # Documents API
 
+![Documents API Logo](./Images/CDE_Logo.png)
+
 > **TODO** Logo😀 Need to wait for bSI to either provide one or approve the proposed logo.
 
 The Documents API is an interactive way of syncing documents between client applications and CDEs. It's specification details the _selection_ or _discovery_, _download_ and _upload_ of documents and files. When supported by both client and server, it provides an easy to use and integrated way of working on cloud stored documents from within local applications. Documents here refers to files, meaning the scope is not only limited to building models but any files.
