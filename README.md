@@ -5,8 +5,6 @@
 
 > **TODO** Host the Swagger Spec directly, would improve the UX here. Maybe via GitHub pages? Or we could provide a static site.
 
-> **TODO** Decide on whether to call it _Documents API_ or _DocumentsAPI_
-
 # Documents API
 
 <img src="./Images/CDE_Logo.png" width="200" height="200">
@@ -87,6 +85,8 @@ BCF API `file_GET` example:
   }
 }
 ```
+
+> **TODO** find better protocol name instead of `documents`, since this is likely to clash with something else.
 
 In the example above, the BCF server returns a value of `documents://<document_version_url>` for the file `reference` part, indicating that this is an url that should be accessed with a Documents API capable client to get the document version endpoint. From there on, compatible clients can retrieve metadata and the binary content of the file.
 
