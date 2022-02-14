@@ -8,8 +8,7 @@
 > **TODO** Decide on whether to call it _Documents API_ or _DocumentsAPI_
 
 # Documents API
-
-![Documents API Logo](./Images/CDE_Logo.png)
+<img src="./Images/CDE_Logo.png" width="200" height="200">
 
 > **TODO** Logo😀 Need to wait for bSI to either provide one or approve the proposed logo.
 
