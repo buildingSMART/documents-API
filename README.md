@@ -61,9 +61,20 @@ The Documents API identifies the following actors:
 
 ![Documents API Topology](./Images/CDE_Overview_Diagram.png)
 
-> **TODO** Have a short paragraph describing the client-server setup / relationship and maybe also a short diagram, showing maybe files flowing (with arrows?) between these two.
+## Use Cases
 
-> **TODO** List use cases, also explicitly list that automatic server-to-server syncing is not part of this API. Mention also that future versions (or other APIs?) will add this feature.
+The Documents API is designed to support the following use cases:
+* File Download - The User, using the Application searches files on the CDE and selects files to download. The Application then downlods the files and makes them available to the User in the Application.
+* File Upload - The User, using the Application, selects local files to upload to the CDE. The Application directs to user to the CDE Web UI. The user enters the document metadata on the CDE. The Application then uploads the file to the CDE. The CDE combines the file with the user-entered metadata and registers a new document.
+* Automatic download of a file previously uploaded or downloaded - The Application detects, using previously stored information, that a new version exists. The Application (with the User's approval) downloads the new version and makes the files available to the User. 
+
+Not yet supported: Automatic syncing of documents between two or more CDEs will be added in the future.  
+
+## How does the Document API work? 
+
+The Documents API is designed to allow the User working with any Client Applications to upload and download files on any CDE. This is accomplished by a file-based  API between the Application and CDE. The Documents API also includes a hand-shake that would allow the Application to direct the User to the CDE's web interface when needed. For example: when commencing a document download the user would search and select Documents on the CDE's web interface. The actual file download is then performed in a direct API call by the Application     
+
+> **TODO** Add a short diagram, showing maybe files flowing (with arrows?) between these two.
 
 # 3. Services
 
