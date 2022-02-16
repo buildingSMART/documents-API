@@ -157,6 +157,7 @@ The Open API specification is the single source of truth for implementing the Do
 
 ### 3.3.1. Document Upload Example
 
+![Document Upload Sequence Diagram](./Diagrams/Document_Upload.png)
 > **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
 
 ### Multipart Upload Considerations & Implementation Notes
