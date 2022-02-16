@@ -6,6 +6,8 @@ info:
 paths:
   /server-provided-path-document-metadata:
     get:
+      tags:
+        - Download
       description: This endpoint returns the metadata for a single document. It's url is retrieved from the links object in the initial document selection response, with the \'document_version_metadata\' property.
       responses:
         200:
@@ -16,6 +18,8 @@ paths:
                 $ref: '#/components/schemas/DocumentMetadata'
   /server-provided-path-document-versions:
     get:
+      tags:
+        - Download
       description: This endpoint returns the versions for a single document. It's url is retrieved from the links object in the initial document selection response, with the \'document_versions\' property.
       responses:
         200:
@@ -26,6 +30,8 @@ paths:
                 $ref: '#/components/schemas/DocumentVersions'
   /server-provided-path-document-version:
     get:
+      tags:
+        - Download
       description: This endpoint returns the document data for a single document. It's url is retrieved from the links object in the initial document selection response, with the \'document_version\' property.
       responses:
         200:
@@ -36,6 +42,8 @@ paths:
                 $ref: '#/components/schemas/DocumentVersion'
   /server-provided-path-selected-documents-url:
     get:
+      tags:
+        - Download
       description: This endpoint returns the document selection. The client retrieves its url via the callback url from the server after the selection has finished. The url of this endpoint is retrieved from the callback sent to the client in a query parameter named selected_documents_url. In case when the user cancels the selection on the CDE UI, this callback will still be called, but the selected_documents_url query parameter will not be present, instead the server will provide a query parameter called user_cancelled_selection=true.
       responses:
         200:
@@ -46,6 +54,8 @@ paths:
                 $ref: '#/components/schemas/SelectedDocuments'
   /server-provided-path-upload-documents-url:
     post:
+      tags:
+        - Upload
       description: This endpoint returns the document upload information. The client retrieves this url via the callback url from the server after the user's completion of the upload metadata entry. The url of this endpoint is retrieved from the callback sent to the client in a query parameter named upload_documents_url. In case when the user cancels the upload on the CDE UI, this callback will still be called, but the upload_documents_url query parameter will not be present, instead the server will provide a query parameter called user_cancelled_upload=true.
       requestBody:
         description: 'The client sends the list of files to be uploaded with this request. The file sizes are then used by the server to generate multiple upload parts, if required.'
@@ -65,6 +75,8 @@ paths:
           description: 'This error may be returned if the file size exceeds the maximum length supported by the server.'
   /server-provided-path-document-upload-file:
     put:
+      tags:
+        - Upload
       description: This endpoint allows the client to upload the file content. The clients obtains this through the document upload information response.
       requestBody:
         content:
@@ -77,6 +89,8 @@ paths:
           description: ''
   /server-provided-path-document-upload-completion:
     post:
+      tags:
+        - Upload
       description: This endpoint must be called by the client when the file content upload has completed successfully. The clients obtains this through the document upload information response.
       responses:
         200:
@@ -87,12 +101,16 @@ paths:
                 $ref: '#/components/schemas/DocumentVersion'
   /server-provided-path-document-upload-cancellation:
     post:
+      tags:
+        - Upload
       description: This endpoint must be called by the client when the file content upload has been cancelled. The clients obtains this through the document upload information response.
       responses:
         204:
           description: ''
   /select-documents:
     post:
+      tags:
+        - Download
       requestBody:
         content:
           application/json:
@@ -108,6 +126,8 @@ paths:
                 $ref: '#/components/schemas/DocumentDiscoverySessionInitialization'
   /upload-documents:
     post:
+      tags:
+        - Upload
       requestBody:
         content:
           application/json:
