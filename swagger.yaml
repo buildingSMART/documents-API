@@ -165,11 +165,11 @@ components:
               description: 'Please note, that if a server supplies custom data here to be used in multipart requests, it is very likely that the server will also have to set a custom Content-Type header with the multipart/form-data type and a server-provided boundary'
               $ref: '#/components/schemas/MultipartFormData'
             content_range_start:
-              description: 'The inclusive start for this part'
+              description: 'The inclusive, zero index based start for this part'
               type: integer
               format: int64
             content_range_end:
-              description: 'The inclusive end for this part'
+              description: 'The inclusive, zero index based end for this part'
               type: integer
               format: int64
     MultipartFormData:
