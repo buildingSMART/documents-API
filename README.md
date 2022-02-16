@@ -20,28 +20,32 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
 <!-- toc  https://ecotrust-canada.github.io/markdown-toc/ -->
 
 - [Documents API](#documents-api)
-  * [Contributing](#contributing)
+  - [Contributing](#contributing)
 - [1. Introduction](#1-introduction)
-  * [1.1. OpenCDE Foundation API](#11-opencde-foundation-api)
+  - [1.1. OpenCDE Foundation API](#11-opencde-foundation-api)
 - [2. Overview](#2-overview)
-  * [2.1 How does the Document API work?](#21-how-does-the-document-api-work)
-  * [2.2 Use Cases](#22-use-cases)
-    + [2.2.1 Download Files](#221-download-files)
-      - [2.2.1.1 Automatic download of a file previously uploaded or downloaded](#2211-automatic-download-of-a-file-previously-uploaded-or-downloaded)
-    + [2.2.2 Upload Files](#222-upload-files)
-    + [2.2.3 Using Documents API and BCF API Together](#223-using-documents-api-and-bcf-api-together)
-      - [2.2.3.1 BCF File References](#2231-bcf-file-references)
-    + [2.2.4 Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
+  - [2.1. How does the Document API work?](#21-how-does-the-document-api-work)
+  - [2.2. Use Cases](#22-use-cases)
+    - [2.2.1. Download Files](#221-download-files)
+      - [2.2.1.1. Automatic download of a file previously uploaded or downloaded](#2211-automatic-download-of-a-file-previously-uploaded-or-downloaded)
+    - [2.2.2. Upload Files](#222-upload-files)
+    - [2.2.3. Using Documents API and BCF API Together](#223-using-documents-api-and-bcf-api-together)
+      - [2.2.3.1. BCF File References](#2231-bcf-file-references)
+    - [2.2.4 Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
 - [3. Services](#3-services)
-  * [3.1 Open API Specification - The Single Source of Truth](#31-open-api-specification---the-single-source-of-truth)
-  * [3.2. Document Download](#32-document-download)
-    + [3.2.1. Document Download Example](#321-document-download-example)
-  * [3.3. Document Upload](#33-document-upload)
-    + [3.3.1. Document Upload Example](#331-document-upload-example)
-    + [Multipart Upload Considerations & Implementation Notes](#multipart-upload-considerations---implementation-notes)
-- [4. Acknowledgements / History](#4-acknowledgements---history)
+  - [3.1 Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
+  - [3.2. Document Download](#32-document-download)
+    - [3.2.1. Document Download Example](#321-document-download-example)
+  - [3.3. Document Upload](#33-document-upload)
+    - [3.3.1. Document Upload Example](#331-document-upload-example)
+    - [3.3.2. Binary File Upload](#332-binary-file-upload)
+    - [Multipart Upload Considerations & Implementation Notes](#multipart-upload-considerations--implementation-notes)
+      - [Identifying Files During the Workflow](#identifying-files-during-the-workflow)
+      - [Why This Workflow](#why-this-workflow)
+- [4. Acknowledgements / History](#4-acknowledgements--history)
 
 markdown-toc</a></i></small>
+
 <!-- tocstop -->
 
 # 1. Introduction
@@ -61,13 +65,15 @@ The Documents API identifies the following actors:
 - Client Application - A desktop Application or a Web Application used by the User to perform her task
 - Common Data Environment (CDE or Server) - A cloud application hosting files for a construction project
 
+> **TODO** Unify how the actors are referred to, e.g. always uppercase, maybe italicized, so be consistent throughout the docs.
+
 ![Documents API Topology](./Images/CDE_Overview_Diagram.png)
 
 > **TODO** Replace the diagram above with an image that correctly shows the three actors described above
 
 ## 2.1. How does the Document API work?
 
-The Documents API is designed to allow a User working with any Client Applications to upload and download files on any CDE. This is accomplished by a file-based API between the Application and the CDE. The Documents API also includes a hand-shake that would allow the Application to direct the User to the CDE's web interface when needed. For example: when commencing a document download the user would search and select Documents on the CDE's web interface. The actual file download is then performed in a direct API made by the Application to the CDE. 
+The Documents API is designed to allow a User working with any Client Applications to upload and download files on any CDE. This is accomplished by a file-based API between the Application and the CDE. The Documents API also includes a hand-shake that would allow the Application to direct the User to the CDE's web interface when needed. For example: when commencing a document download the user would search and select Documents on the CDE's web interface. The actual file download is then performed in a direct API made by the Application to the CDE.
 
 ## 2.2. Use Cases
 
@@ -77,7 +83,7 @@ The Documents API is designed to support the following use cases:
 
 The User, using the Application searches files on the CDE and selects files to download. The Application then downloads the files and makes them available to the User in the Application.
 
-#### 2.2.1.1. Automatic download of a file previously uploaded or downloaded 
+#### 2.2.1.1. Automatic download of a file previously uploaded or downloaded
 
 The Application detects, using previously stored information, that new document versions exists. The Application obtains the User's approval and downloads the new version and makes the files available to the User.
 
@@ -118,7 +124,7 @@ In the example above, the BCF server returns a value of `open-cde-documents://<d
 
 The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
-### 2.2.4 Automatic syncing of documents between two or more CDEs 
+### 2.2.4 Automatic syncing of documents between two or more CDEs
 
 This use case is not yet supported. It will be added in the future.
 
@@ -126,7 +132,7 @@ This use case is not yet supported. It will be added in the future.
 
 > **TODO** Mention that the spec doesn't make any assumptions about concurrency is handled, e.g. two users trying to upload a document version at the same time. Also think where to put this paragraph😀
 
-## 3.1 Open API Specification - The Single Source of Truth
+## 3.1 Open API (Swagger) Specification - The Single Source of Truth
 
 Documents API is specified using [Open API](https://www.openapis.org/). You can find the Open API specification [here](swagger.yaml). The specification can be used to automatically generate client and server code, although most of the endpoints will not work directly, since the API is built with few fixed endpoints. Most of the endpoints are discovered and received in the returned payloads of the calls. The dynamic endpoints start with `server-provided-path-`.
 The motivation for using dynamic endpoints is to make the implementation of the API on the server easy and efficient. For example, when a link to download a document is retrieved from the service, that link can point to an already existing API end point, or event to a third parth file hosting service.
@@ -151,22 +157,29 @@ The Open API specification is the single source of truth for implementing the Do
 
 ## 3.3. Document Upload
 
+> **TODO** Add reference to the sequence diagram generator tool, for later editing and new collaborators
+
 > **TODO** Text description, and flow sequence diagram.
 
 ### 3.3.1. Document Upload Example
 
 ![Document Upload Sequence Diagram](./Diagrams/Document_Upload.png)
+
 > **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
+
+### 3.3.2. Binary File Upload
 
 ### Multipart Upload Considerations & Implementation Notes
 
-Uploading documents to CDE is the most complicated workflow in this API. The flow starts with presenting meta data (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional meta data that the CDE deems necessary for the documents. When the user is finished entering the meta data a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
+Uploading documents to CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional meta data that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
 
 #### Identifying Files During the Workflow
+
 The `session_file_id` property used in the components (`FileToUpload`, `UploadFileDetails`, `DocumentToUpload`) related to uploading files is a client-generated identifier that is only used during upload. It doesn't need to be persisted between upload sessions. It is used to relate the information given in different phases of the workflow to the individual files that are being processed.
 
 #### Why This Workflow
-The reason why uploading is done in so many steps is to support a use case, where the client software doesn't yet have the local file available, when the upload workflow starts. For example, when a CAD tool would like to export an IFC file to the server. Creating that IFC file can take a long time. With the chosen workflow, the user interaction happens first, and only when the server knows all the necessary meta data, the client software can start creating the file, if it already doesn't exist, and uploading it. Since this process doesn't need interaction, it can happen in the background and doesn't need attention from the user.
+
+The reason why the file size is sent only after the metadata has been entered in the CDE UI, is to support a use case, where the client software doesn't yet have the local file available when the upload workflow starts. For example, when a CAD tool would like to export an IFC file to the server. Creating that IFC file can take a long time. With the chosen workflow, the user interaction happens first, and only when the server knows all the necessary meta data, the client software can start creating the file, if it already doesn't exist, and uploading it. Since this process doesn't need interaction, it can happen in the background and doesn't need attention from the user.
 
 # 4. Acknowledgements / History
 
