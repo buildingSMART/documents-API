@@ -37,11 +37,12 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
   - [3.2. Document Download](#32-document-download)
     - [3.2.1. Document Download Example](#321-document-download-example)
   - [3.3. Document Upload](#33-document-upload)
-    - [3.3.1. Document Upload Example](#331-document-upload-example)
-    - [3.3.2. Binary File Upload](#332-binary-file-upload)
-    - [Multipart Upload Considerations & Implementation Notes](#multipart-upload-considerations--implementation-notes)
-      - [Identifying Files During the Workflow](#identifying-files-during-the-workflow)
-      - [Why This Workflow](#why-this-workflow)
+    - [3.3.1. Binary File Upload](#331-binary-file-upload)
+      - [3.3.1.1. Multipart Upload Considerations & Implementation Notes](#3311-multipart-upload-considerations--implementation-notes)
+      - [3.3.1.2. Identifying Files During the Workflow](#3312-identifying-files-during-the-workflow)
+      - [3.3.1.3. Why This Workflow](#3313-why-this-workflow)
+    - [3.3.2. Document Upload Example](#332-document-upload-example)
+      - [3.3.2.1. Sequence Diagram](#3321-sequence-diagram)
 - [4. Acknowledgements / History](#4-acknowledgements--history)
 
 markdown-toc</a></i></small>
@@ -161,25 +162,27 @@ The Open API specification is the single source of truth for implementing the Do
 
 > **TODO** Text description, and flow sequence diagram.
 
-### 3.3.1. Document Upload Example
+### 3.3.1. Binary File Upload
+
+#### 3.3.1.1. Multipart Upload Considerations & Implementation Notes
+
+Uploading documents to CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional meta data that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
+
+#### 3.3.1.2. Identifying Files During the Workflow
+
+The `session_file_id` property used in the components (`FileToUpload`, `UploadFileDetails`, `DocumentToUpload`) related to uploading files is a client-generated identifier that is only used during upload. It doesn't need to be persisted between upload sessions. It is used to relate the information given in different phases of the workflow to the individual files that are being processed.
+
+#### 3.3.1.3. Why This Workflow
+
+The reason why the file size is sent only after the metadata has been entered in the CDE UI, is to support a use case, where the client software doesn't yet have the local file available when the upload workflow starts. For example, when a CAD tool would like to export an IFC file to the server. Creating that IFC file can take a long time. With the chosen workflow, the user interaction happens first, and only when the server knows all the necessary meta data, the client software can start creating the file, if it already doesn't exist, and uploading it. Since this process doesn't need interaction, it can happen in the background and doesn't need attention from the user.
+
+### 3.3.2. Document Upload Example
+
+#### 3.3.2.1. Sequence Diagram
 
 ![Document Upload Sequence Diagram](./Diagrams/Document_Upload.png)
 
 > **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
-
-### 3.3.2. Binary File Upload
-
-### Multipart Upload Considerations & Implementation Notes
-
-Uploading documents to CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional meta data that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
-
-#### Identifying Files During the Workflow
-
-The `session_file_id` property used in the components (`FileToUpload`, `UploadFileDetails`, `DocumentToUpload`) related to uploading files is a client-generated identifier that is only used during upload. It doesn't need to be persisted between upload sessions. It is used to relate the information given in different phases of the workflow to the individual files that are being processed.
-
-#### Why This Workflow
-
-The reason why the file size is sent only after the metadata has been entered in the CDE UI, is to support a use case, where the client software doesn't yet have the local file available when the upload workflow starts. For example, when a CAD tool would like to export an IFC file to the server. Creating that IFC file can take a long time. With the chosen workflow, the user interaction happens first, and only when the server knows all the necessary meta data, the client software can start creating the file, if it already doesn't exist, and uploading it. Since this process doesn't need interaction, it can happen in the background and doesn't need attention from the user.
 
 # 4. Acknowledgements / History
 
