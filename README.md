@@ -109,14 +109,12 @@ BCF API `file_GET` example:
   "file": {
     "ifc_project": "0J$yPqHBD12v72y4qF6XcD",
     "file_name": "OfficeBuilding_Architecture_0001.ifc",
-    "reference": "documents://<document_version_url>"
+    "reference": "open-cde-documents://<document_version_url>"
   }
 }
 ```
 
-> **TODO** find better protocol name instead of `documents`, since this is likely to clash with something else.
-
-In the example above, the BCF server returns a value of `documents://<document_version_url>` for the file `reference` part, indicating that this is an url that should be accessed with a Documents API capable client to get the document version endpoint. From there on, compatible clients can retrieve metadata and the binary content of the file.
+In the example above, the BCF server returns a value of `open-cde-documents://<document_version_url>` for the file `reference` part, indicating that this is an url that should be accessed with a Documents API capable client to get the document version endpoint. From there on, compatible clients can retrieve metadata and the binary content of the file.
 
 The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
