@@ -349,6 +349,12 @@ components:
         selection_context:
           type: string
           nullable: true
+        supported_file_extensions:
+          description: 'The client may optionally provide an array of accepted file extensions that should be opened during this flow. The CDE server UI should make an attempt to only show files matching these extensions to the user for the download selection or help the user in selecting the desired files. However, the server does not have to guarantee that only files matching the extensions will be selected. The extensions here must contain the dot separator.'
+          example: [".ifc", ".ifczip"]
+          type: array
+          items:
+            type: string
     UploadFileDetails:
       type: object
       description: 'This object holds information about files to be uploaded. Each file in the array needs a file size so that the server can calculate the needed parts for a multipart upload. The session_file_id is used to identify the file.'
