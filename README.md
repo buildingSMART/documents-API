@@ -84,6 +84,8 @@ The Documents API is designed to support the following use cases:
 
 The User, using the Application searches files on the CDE and selects files to download. The Application then downloads the files and makes them available to the User in the Application.
 
+![image](https://user-images.githubusercontent.com/215043/156319776-6f08ce53-53e9-48fa-a0da-0bcb1abb5e5b.png)
+
 #### 2.2.1.1. Automatic download of a file previously uploaded or downloaded
 
 The Application detects, using previously stored information, that new document versions exists. The Application obtains the User's approval and downloads the new version and makes the files available to the User.
