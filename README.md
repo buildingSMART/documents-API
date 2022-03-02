@@ -43,6 +43,12 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
       - [3.3.1.3. Why This Workflow](#3313-why-this-workflow)
     - [3.3.2. Document Upload Example](#332-document-upload-example)
       - [3.3.2.1. Sequence Diagram](#3321-sequence-diagram)
+      - [3.3.2.2. Step-by-Step Example](#3322-step-by-step-example)
+        - [3.3.2.2.1. Initiating Upload](#33221-initiating-upload)
+        - [3.3.2.2.2. CDE Upload Response](#33222-cde-upload-response)
+        - [3.3.2.2.3. User Enters File Data in CDE UI](#33223-user-enters-file-data-in-cde-ui)
+        - [3.3.2.2.4. Client Queries Upload Instructions](#33224-client-queries-upload-instructions)
+        - [3.3.2.2.5. Binary File Upload](#33225-binary-file-upload)
 - [4. Acknowledgements / History](#4-acknowledgements--history)
 
 markdown-toc</a></i></small>
@@ -184,7 +190,159 @@ The reason why the file size is sent only after the metadata has been entered in
 
 ![Document Upload Sequence Diagram](./Diagrams/Document_Upload.png)
 
-> **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
+#### 3.3.2.2. Step-by-Step Example
+
+##### 3.3.2.2.1. Initiating Upload
+
+The client initiates the document selection by sending a POST request to the CDEs _/upload-documents_ endpoint.  
+The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `upload_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
+The `files` array has a single element, and this file was assigned a client generated `session_file_id`, see [3.3.1.2. Identifying Files During the Workflow](#3312-identifying-files-during-the-workflow).
+
+```json
+POST /upload-documents
+Body:
+{
+  "upload_context": "7188a2be-6c4e-4e3b-b7e7-cd27f0d4ad67",
+  "callback": {
+    "url": "http://localhost:8080/cde-callback-example",
+    "expires_in": 3600
+  },
+  "files": [
+    {
+      "file_name": "model.ifc",
+      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b"
+    }
+  ]
+}
+```
+
+##### 3.3.2.2.2. CDE Upload Response
+
+The server returns a response to inform the client about the `upload_ui_url` which should be opened in a local web browser. The `expires_in` property specifies how long this link will be valid, and the optional property `max_size_in_bytes` can be used to indicate if there is a file size limit for uploading.
+
+```json
+{
+  "upload_ui_url": "https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
+  "expires_in": 60,
+  "max_size_in_bytes": 1073741824
+}
+```
+
+##### 3.3.2.2.3. User Enters File Data in CDE UI
+
+The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
+Here, the user is seeing the native CDE UI, and they need to enter necessary information for the file to be uploaded. The implementation here is server specific. After the user has done the implementation, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this upload sessions, e.g. `http://localhost:8080/cde-callback-example?upload_documents_url=https%3A%2F%2Fcde.example.com%2Fupload-instructions%3Fupload_session%3Dee56b8f3-8f93-4819-976e-46a45a5a996f`.  
+In the example, the browser is being redirect to the local callback url for the client, and transports the url of the endpoint in the `upload_documents_url` query parameter, in this case with a value of `https://cde.example.com/upload-instructions?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`. Please note that the actual value is url encoded.
+
+> Note: Most CDEs use a direct login link with the `upload_ui_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
+
+##### 3.3.2.2.4. Client Queries Upload Instructions
+
+The client now sends a `POST` request to the server provided `upload_documents_url` to receive the instructions for how to upload the files.
+
+```json
+POST https://cde.example.com/upload-instructions?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f
+Body:
+{
+  "files": [
+    {
+      "size_in_bytes": "1048576",
+      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b"
+    }
+  ]
+}
+```
+
+In the response, the CDE returns the upload instructions.
+
+```json
+{
+  "upload_context": "ee56b8f3-8f93-4819-976e-46a45a5a996f",
+  "documents_to_upload": [
+    {
+      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b",
+      "upload_file_parts": [
+        {
+          "url": "https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356",
+          "http_method": "PUT",
+          "additional_headers": {
+            "values": [
+              {
+                "name": "Content-Length",
+                "value": "524288"
+              }
+            ]
+          },
+          "include_authorization": false,
+          "multipart_form_data": null,
+          "content_range_start": 0,
+          "content_range_end": 524287
+        },
+        {
+          "url": "https://cde-storage.example.com/2271db11-e24b-4b8c-9622-3ed63dc38e48",
+          "http_method": "PUT",
+          "additional_headers": {
+            "values": [
+              {
+                "name": "Content-Length",
+                "value": "524288"
+              }
+            ]
+          },
+          "include_authorization": false,
+          "multipart_form_data": null,
+          "content_range_start": 524288,
+          "content_range_end": 1048575
+        }
+      ],
+      "upload_completion": {
+        "url": "https://cde.example.com/upload-completion?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f"
+      },
+      "upload_cancellation": {
+        "url": "https://cde.example.com/upload-cancellation?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f"
+      }
+    }
+  ]
+}
+```
+
+##### 3.3.2.2.5. Binary File Upload
+
+In the previous step, the client has received instructions how to upload the binary data of the files. The file to upload had two entries in the `upload_file_parts` array, meaning that the upload has to be split into two parts.  
+A single upload part looks like this:
+
+```json
+{
+  "url": "https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356",
+  "http_method": "PUT",
+  "additional_headers": {
+    "values": [
+      {
+        "name": "Content-Length",
+        "value": "524288"
+      }
+    ]
+  },
+  "include_authorization": false,
+  "multipart_form_data": null,
+  "content_range_start": 0,
+  "content_range_end": 524287
+}
+```
+
+The element above describes how the client should upload this part of the file.
+
+| Field                   | Value                                                                  | Description                                                                                                                                                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `url`                   | `https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356` | The url where the binary data should be sent to. In this case, this is on a domain different than the CDE, which likely means that an external storage provider is used. This is common and should be expected by all clients. |
+| `http_method`           | `PUT`                                                                  | The http method to use when sending the binary data.                                                                                                                                                                           |
+| `additional_headers`    |                                                                        | This optional object instructs the client to use specific headers when performing the request. In this case, the `Content-Length` header should be set.                                                                        |
+| `include_authorization` | `false`                                                                | Whether or not to use the OAuth2 token in the request. Typically set to `false` for external storage providers.                                                                                                                |
+| `multipart_form_data`   |                                                                        | This is an optional property. If this is present, this includes `prefix` and `suffix` data that should be sent verbatim in the request body before or after the actual payload.                                                |
+| `content_range_start`   | `0`                                                                    | The inclusive, zero based start for the range of bytes to be sent in this part of the upload.                                                                                                                                  |
+| `content_range_end`     | `524287`                                                               | The inclusive, zero based end for the range of bytes to be sent in this part of the upload.                                                                                                                                    |
+
+> **TODO** Finish upload example, completion and cancellation missing.
 
 # 4. Acknowledgements / History
 
