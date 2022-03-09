@@ -49,6 +49,8 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
         - [3.3.2.2.3. User Enters File Data in CDE UI](#33223-user-enters-file-data-in-cde-ui)
         - [3.3.2.2.4. Client Queries Upload Instructions](#33224-client-queries-upload-instructions)
         - [3.3.2.2.5. Binary File Upload](#33225-binary-file-upload)
+        - [3.3.2.2.6. Upload Completion](#33226-upload-completion)
+        - [3.3.2.2.7. Upload Cancellation](#33227-upload-cancellation)
 - [4. Acknowledgements / History](#4-acknowledgements--history)
 
 markdown-toc</a></i></small>
@@ -273,8 +275,11 @@ In the response, the CDE returns the upload instructions.
               }
             ]
           },
+          "multipart_form_data": {
+            "prefix": "U0VSVkVSX1NUQVJU",
+            "suffix": "U0VSVkVSX0VORA=="
+          },
           "include_authorization": false,
-          "multipart_form_data": null,
           "content_range_start": 0,
           "content_range_end": 524287
         },
@@ -285,12 +290,15 @@ In the response, the CDE returns the upload instructions.
             "values": [
               {
                 "name": "Content-Length",
-                "value": "524288"
+                "value": "524310"
               }
             ]
           },
+          "multipart_form_data": {
+            "prefix": "U0VSVkVSX1NUQVJU",
+            "suffix": "U0VSVkVSX0VORA=="
+          },
           "include_authorization": false,
-          "multipart_form_data": null,
           "content_range_start": 524288,
           "content_range_end": 1048575
         }
@@ -306,10 +314,12 @@ In the response, the CDE returns the upload instructions.
 }
 ```
 
+In this example, there is just a single document being uploaded. The server has, in the `upload_file_parts` array, specified that this has to be uploaded in two chunks.
+
 ##### 3.3.2.2.5. Binary File Upload
 
-In the previous step, the client has received instructions how to upload the binary data of the files. The file to upload had two entries in the `upload_file_parts` array, meaning that the upload has to be split into two parts.  
-A single upload part looks like this:
+In the previous step, the client has received instructions how to upload the binary data of the files. The following actions must be performed for each document in the returned `documents_to_upload` array and their `upload_file_parts` elements.
+A single upload file part looks like this:
 
 ```json
 {
@@ -319,12 +329,15 @@ A single upload part looks like this:
     "values": [
       {
         "name": "Content-Length",
-        "value": "524288"
+        "value": "524310"
       }
     ]
   },
+  "multipart_form_data": {
+    "prefix": "U0VSVkVSX1NUQVJU",
+    "suffix": "U0VSVkVSX0VORA=="
+  },
   "include_authorization": false,
-  "multipart_form_data": null,
   "content_range_start": 0,
   "content_range_end": 524287
 }
@@ -332,17 +345,83 @@ A single upload part looks like this:
 
 The element above describes how the client should upload this part of the file.
 
-| Field                   | Value                                                                  | Description                                                                                                                                                                                                                    |
-| ----------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `url`                   | `https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356` | The url where the binary data should be sent to. In this case, this is on a domain different than the CDE, which likely means that an external storage provider is used. This is common and should be expected by all clients. |
-| `http_method`           | `PUT`                                                                  | The http method to use when sending the binary data.                                                                                                                                                                           |
-| `additional_headers`    |                                                                        | This optional object instructs the client to use specific headers when performing the request. In this case, the `Content-Length` header should be set.                                                                        |
-| `include_authorization` | `false`                                                                | Whether or not to use the OAuth2 token in the request. Typically set to `false` for external storage providers.                                                                                                                |
-| `multipart_form_data`   |                                                                        | This is an optional property. If this is present, this includes `prefix` and `suffix` data that should be sent verbatim in the request body before or after the actual payload.                                                |
-| `content_range_start`   | `0`                                                                    | The inclusive, zero based start for the range of bytes to be sent in this part of the upload.                                                                                                                                  |
-| `content_range_end`     | `524287`                                                               | The inclusive, zero based end for the range of bytes to be sent in this part of the upload.                                                                                                                                    |
+| Field                        | Value                                                                  | Description                                                                                                                                                                                                                                                                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `url`                        | `https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356` | The url where the binary data should be sent to. In this case, this is on a domain different than the CDE, which likely means that an external storage provider is used. This is common and should be expected by all clients.                                                                                                     |
+| `http_method`                | `PUT`                                                                  | The http method to use when sending the binary data.                                                                                                                                                                                                                                                                               |
+| `additional_headers`         |                                                                        | This optional object instructs the client to use specific headers when performing the request. In this case, the `Content-Length` header should be set. Note, in this example, the `Content-Length` value reflects the total bytes count of the body as well as the `multipart_form_data.prefix` and `multipart_form_data.suffix`. |
+| `include_authorization`      | `false`                                                                | Whether or not to use the OAuth2 token in the request. Typically set to `false` for external storage providers.                                                                                                                                                                                                                    |
+| `multipart_form_data`        |                                                                        | This is an optional property. If this is present, this includes `prefix` and `suffix` data that should be sent verbatim in the request body before or after the actual payload.                                                                                                                                                    |
+| `multipart_form_data.prefix` | `U0VSVkVSX1NUQVJU`                                                     | This is a Base64 encoded string containing data that must be prepended to the request body                                                                                                                                                                                                                                         |
+| `multipart_form_data.suffix` | `U0VSVkVSX0VORA==`                                                     | This is a Base64 encoded string containing data that must be appended to the request body                                                                                                                                                                                                                                          |
+| `content_range_start`        | `0`                                                                    | The inclusive, zero based start for the range of bytes to be sent in this part of the upload.                                                                                                                                                                                                                                      |
+| `content_range_end`          | `524287`                                                               | The inclusive, zero based end for the range of bytes to be sent in this part of the upload.                                                                                                                                                                                                                                        |
 
-> **TODO** Finish upload example, completion and cancellation missing.
+In this case, the upload request would look like this:
+
+```
+PUT https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356
+
+Headers:
+Content-Length: 524310
+
+Body:
+<Binary Data, from multipart_form_data.prefix>
+<Binary Data, from byte index 0 to 524287>
+<Binary Data, from multipart_form_data.suffix>
+```
+
+##### 3.3.2.2.6. Upload Completion
+
+After the client has successfully uploaded all binary parts of the document, the server must be notified via the upload completion endpoint. In this example, the url for this endpoint was returned as `https://cde.example.com/upload-completion?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`.
+
+The client just sends a `POST` request without a body to this endpoint and receives a `DocumentVersion` as response:
+
+```json
+{
+  "links": {
+    "document_version": {
+      "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0"
+    },
+    "document_version_metadata": {
+      "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0/metadata"
+    },
+    "document_version_download": {
+      "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0/download"
+    },
+    "document_versions": {
+      "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions"
+    },
+    "document_details": {
+      "url": "https://cde.example.com/ui/projects/12485/documents/bf546064-6b97-4730-a094-c21ab929c91a/v3.0"
+    }
+  },
+  "version_number": "v3.0",
+  "version_index": 3,
+  "creation_date": "2022-03-09T08:02:53.866Z",
+  "title": "Sample Document",
+  "file_description": {
+    "name": "model.ifc",
+    "size_in_bytes": 1048576
+  },
+  "document_id": "bf546064-6b97-4730-a094-c21ab929c91a"
+}
+```
+
+| Field                                 | Description                                                                                                                                                |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `links.document_version.url`          | This url should return exactly the same as the response above, it's a link to itself, the document version.                                                |
+| `links.document_version_metadata.url` | This url can be used to obtain metadata, a collection of key-value pairs, for this document version.                                                       |
+| `links.document_version_download.url` | The url to download the content of the document version.                                                                                                   |
+| `links.document_versions.url`         | This url returns an overview of all versions available for the parent document.                                                                            |
+| `links.document_details.url`          | _Optional_, this url is to be opened in the browser. If this is given, it points to a location where the user can view the document details in the CDE UI. |
+| `document_id`                         | This is the identifier of the parent document, under which this created version is attached.                                                               |
+
+##### 3.3.2.2.7. Upload Cancellation
+
+If the client or the user decide to cancel the upload, the server must be notified via the upload cancellation endpoint. In this example, the url for this endpoint was returned as `https://cde.example.com/upload-cancellation?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`.
+
+The client just sends a `POST` request without a body and receives an empty response with status code `204 - No Content`.
 
 # 4. Acknowledgements / History
 
