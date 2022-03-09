@@ -100,7 +100,7 @@ The Application detects, using previously stored information, that new document 
 
 The User, using the Application, selects local files to upload to the CDE. The Application directs to user to the CDE Web UI. The user enters, for each file, the required document metadata on the CDE. The Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers a new document.
 
-> **TODO** Add a short diagram, showing maybe files flowing (with arrows?) between these two.
+![image](https://user-images.githubusercontent.com/215043/157398959-f322c959-2fb1-427d-9c04-a370a6a0be11.png)
 
 ### 2.2.3. Using Documents API and BCF API Together
 
