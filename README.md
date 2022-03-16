@@ -92,7 +92,7 @@ The Documents API is designed to support the following use cases:
 
 The User, using the Application searches files on the CDE and selects files to download. The Application then downloads the files and makes them available to the User in the Application.
 
-![image](https://user-images.githubusercontent.com/215043/156319776-6f08ce53-53e9-48fa-a0da-0bcb1abb5e5b.png)
+![image](https://user-images.githubusercontent.com/215043/158538705-1896c2e0-3ae2-46a3-8ba0-4bb2114dc299.png)
 
 #### 2.2.1.1. Automatic download of a file previously uploaded or downloaded
 
@@ -100,9 +100,9 @@ The Application detects, using previously stored information, that new document 
 
 ### 2.2.2. Upload Files
 
-The User, using the Application, selects local files to upload to the CDE. The Application directs to user to the CDE Web UI. The user enters, for each file, the required document metadata on the CDE. The Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers a new document.
+The User, using the Application, selects local files to upload to the CDE. The Application directs to user to the CDE Web UI. The user enters, for each file, the required document metadata on the CDE. The Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers a new document. The user can continue workin while the files are uploaded in the background.
 
-![image](https://user-images.githubusercontent.com/215043/157398959-f322c959-2fb1-427d-9c04-a370a6a0be11.png)
+![image](https://user-images.githubusercontent.com/215043/158538226-9bc38772-8289-4dd9-a174-283c84edf42e.png)
 
 ### 2.2.3. Using Documents API and BCF API Together
 
