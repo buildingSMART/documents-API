@@ -36,6 +36,11 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
   - [3.1 Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
   - [3.2. Document Download](#32-document-download)
     - [3.2.1. Document Download Example](#321-document-download-example)
+      - [3.2.1.1. Step-by-Step Example](#3211-step-by-step-example)
+        - [3.2.1.1.1. Initiating Download](#32111-initiating-download)
+        - [3.2.1.1.2. CDE Selection Response](#32112-cde-selection-response)
+        - [3.2.1.1.3. User Selects Documents in CDE UI](#32113-user-selects-documents-in-cde-ui)
+        - [3.2.1.1.4. Client Queries Document Versions](#32114-client-queries-document-versions)
   - [3.3. Document Upload](#33-document-upload)
     - [3.3.1. Binary File Upload](#331-binary-file-upload)
       - [3.3.1.1. Multipart Upload Considerations & Implementation Notes](#3311-multipart-upload-considerations--implementation-notes)
@@ -166,6 +171,106 @@ The Open API specification is the single source of truth for implementing the Do
 
 > **TODO** See <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>, we should make the _reference_ from the BCF-API be the url that is returned here for the download as to better integrate the two APIs,
 
+#### 3.2.1.1. Step-by-Step Example
+
+##### 3.2.1.1.1. Initiating Download
+
+The client initiates the document selection by sending a POST request to the CDEs _/select-documents_ endpoint.  
+The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `selection_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
+The `supported_file_extensions` is an optional array where the client specifies that the CDE should limit the user to select only files with the extensions `.ifc` or `.ifczip`.
+
+```json
+POST /upload-documents
+Body:
+{
+  "selection_context": "711c0744-0a92-489f-8ca1-13813aa2dee7",
+  "callback": {
+    "url": "http://localhost:8080/cde-callback-example",
+    "expires_in": 3600
+  },
+  "supported_file_extensions": [
+    ".ifc",
+    ".ifczip"
+  ]
+}
+```
+
+##### 3.2.1.1.2. CDE Selection Response
+
+The server returns a response to inform the client about the `selected_documents_url` which should be opened in a local web browser. The `expires_in` property specifies how long this link will be valid.
+
+```json
+{
+  "selected_documents_url": "https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
+  "expires_in": 60
+}
+```
+
+##### 3.2.1.1.3. User Selects Documents in CDE UI
+
+The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
+Here, the user is seeing the native CDE UI, which they use to search for and select documents. After the user has done the selection, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this download session, e.g. `http://localhost:8080/cde-callback-example?selected_documents_url=https%3A%2F%2Fcde.example.com%2Fdownload-instructions%3Fsession_id%3Db59dab23-79a4-4e66-a1a7-8837871604fa`.  
+In the example, the browser is being redirect to the local callback url for the client, and transports the url of the endpoint in the `selected_documents_url` query parameter, in this case with a value of `https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa`. Please note that the actual value is url encoded.
+
+> Note: Most CDEs use a direct login link with the `selected_documents_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
+
+##### 3.2.1.1.4. Client Queries Document Versions
+
+After having received the callback from the CDE UI, the client now sends a request to get the document versions from the CDE.
+
+```
+GET https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa
+```
+
+Response:
+
+```json
+{
+  "selection_context": "5a0b9c95-481c-4eb0-b564-0d04837c669d",
+  "documents": [
+    {
+      "links": {
+        "document_version": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0"
+        },
+        "document_version_metadata": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0/metadata"
+        },
+        "document_version_download": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0/download"
+        },
+        "document_versions": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions"
+        },
+        "document_details": {
+          "url": "https://cde.example.com/ui/projects/12485/documents/bf546064-6b97-4730-a094-c21ab929c91a/v3.0"
+        }
+      },
+      "version_number": "v3.0",
+      "version_index": 3,
+      "creation_date": "2022-03-09T08:02:53.866Z",
+      "title": "Sample Document",
+      "file_description": {
+        "name": "model.ifc",
+        "size_in_bytes": 1048576
+      },
+      "document_id": "bf546064-6b97-4730-a094-c21ab929c91a"
+    }
+  ]
+}
+```
+
+The response returned from the server contains the optional `selection_context` property, which can be used later to do a new selection or upload in the same context of the CDE.  
+The `documents` array contains a list of all the document version objects that the user has selected. Those elements contain some data about the documents themselves as well as `links` under which additional data can be obtained.
+
+| Link                        | Description                                                                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `document_version`          | This url points to the object itself                                                                                                           |
+| `document_version_metadata` | The metadata for document versions is a list of key-value pairs                                                                                |
+| `document_version_download` | The url to download the binary content of this document version. May either directly return the result or redirect to a storage provider       |
+| `document_versions`         | This url returns a list of all document versions for the parent document                                                                       |
+| `document_details`          | This optional url points to the CDE UI itself, meaning it can be opened by the local browser to show the document version in the native CDE UI |
+
 ## 3.3. Document Upload
 
 > **TODO** Add reference to the sequence diagram generator tool, for later editing and new collaborators
@@ -196,7 +301,7 @@ The reason why the file size is sent only after the metadata has been entered in
 
 ##### 3.3.2.2.1. Initiating Upload
 
-The client initiates the document selection by sending a POST request to the CDEs _/upload-documents_ endpoint.  
+The client initiates the document upload by sending a POST request to the CDEs _/upload-documents_ endpoint.  
 The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `upload_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
 The `files` array has a single element, and this file was assigned a client generated `session_file_id`, see [3.3.1.2. Identifying Files During the Workflow](#3312-identifying-files-during-the-workflow).
 
@@ -233,7 +338,7 @@ The server returns a response to inform the client about the `upload_ui_url` whi
 ##### 3.3.2.2.3. User Enters File Data in CDE UI
 
 The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
-Here, the user is seeing the native CDE UI, and they need to enter necessary information for the file to be uploaded. The implementation here is server specific. After the user has done the implementation, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this upload sessions, e.g. `http://localhost:8080/cde-callback-example?upload_documents_url=https%3A%2F%2Fcde.example.com%2Fupload-instructions%3Fupload_session%3Dee56b8f3-8f93-4819-976e-46a45a5a996f`.  
+Here, the user is seeing the native CDE UI, and they need to enter necessary information for the file to be uploaded. After the user has prepared the document data, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this upload session, e.g. `http://localhost:8080/cde-callback-example?upload_documents_url=https%3A%2F%2Fcde.example.com%2Fupload-instructions%3Fupload_session%3Dee56b8f3-8f93-4819-976e-46a45a5a996f`.  
 In the example, the browser is being redirect to the local callback url for the client, and transports the url of the endpoint in the `upload_documents_url` query parameter, in this case with a value of `https://cde.example.com/upload-instructions?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`. Please note that the actual value is url encoded.
 
 > Note: Most CDEs use a direct login link with the `upload_ui_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
