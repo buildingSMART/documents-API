@@ -8,7 +8,7 @@ paths:
     get:
       tags:
         - Download
-      description: This endpoint returns the metadata for a single document. It's url is retrieved from the links object in the initial document selection response, with the \'document_version_metadata\' property.
+      description: This endpoint returns the metadata for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_version_metadata\' property.
       responses:
         200:
           description: ''
@@ -20,7 +20,7 @@ paths:
     get:
       tags:
         - Download
-      description: This endpoint returns the versions for a single document. It's url is retrieved from the links object in the initial document selection response, with the \'document_versions\' property.
+      description: This endpoint returns the versions for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_versions\' property.
       responses:
         200:
           description: ''
@@ -32,7 +32,7 @@ paths:
     get:
       tags:
         - Download
-      description: This endpoint returns the document data for a single document. It's url is retrieved from the links object in the initial document selection response, with the \'document_version\' property.
+      description: This endpoint returns the document data for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_version\' property. Clients that need to monitor for new document versions may periodically poll this endpoint, but should honor the 'ETag' header. This endpoint should not be called more frequently than once every ten seconds per each distinct document url.
       responses:
         200:
           description: ''
