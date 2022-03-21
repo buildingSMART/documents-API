@@ -180,14 +180,14 @@ The Open API specification is the single source of truth for implementing the Do
 ##### 3.2.1.1.1. Initiating Download
 
 The client initiates the document selection by sending a POST request to the CDEs _/select-documents_ endpoint.  
-The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `selection_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
+The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `server_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
 The `supported_file_extensions` is an optional array where the client specifies that the CDE should limit the user to select only files with the extensions `.ifc` or `.ifczip`.
 
 ```json
 POST /upload-documents
 Body:
 {
-  "selection_context": "711c0744-0a92-489f-8ca1-13813aa2dee7",
+  "server_context": "711c0744-0a92-489f-8ca1-13813aa2dee7",
   "callback": {
     "url": "http://localhost:8080/cde-callback-example",
     "expires_in": 3600
@@ -230,7 +230,7 @@ Response:
 
 ```json
 {
-  "selection_context": "5a0b9c95-481c-4eb0-b564-0d04837c669d",
+  "server_context": "5a0b9c95-481c-4eb0-b564-0d04837c669d",
   "documents": [
     {
       "links": {
@@ -264,7 +264,7 @@ Response:
 }
 ```
 
-The response returned from the server contains the optional `selection_context` property, which can be used later to do a new selection or upload in the same context of the CDE.  
+The response returned from the server contains the optional `server_context` property, which can be used later to do a new selection or upload in the same context of the CDE.  
 The `documents` array contains a list of all the document version objects that the user has selected. Those elements contain some data about the documents themselves as well as `links` under which additional data can be obtained.
 
 | Link                        | Description                                                                                                                                    |
@@ -306,14 +306,14 @@ The reason why the file size is sent only after the metadata has been entered in
 ##### 3.3.2.2.1. Initiating Upload
 
 The client initiates the document upload by sending a POST request to the CDEs _/upload-documents_ endpoint.  
-The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `upload_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
+The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `server_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
 The `files` array has a single element, and this file was assigned a client generated `session_file_id`, see [3.3.1.2. Identifying Files During the Workflow](#3312-identifying-files-during-the-workflow).
 
 ```json
 POST /upload-documents
 Body:
 {
-  "upload_context": "7188a2be-6c4e-4e3b-b7e7-cd27f0d4ad67",
+  "server_context": "7188a2be-6c4e-4e3b-b7e7-cd27f0d4ad67",
   "callback": {
     "url": "http://localhost:8080/cde-callback-example",
     "expires_in": 3600
@@ -368,7 +368,7 @@ In the response, the CDE returns the upload instructions.
 
 ```json
 {
-  "upload_context": "ee56b8f3-8f93-4819-976e-46a45a5a996f",
+  "server_context": "ee56b8f3-8f93-4819-976e-46a45a5a996f",
   "documents_to_upload": [
     {
       "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b",

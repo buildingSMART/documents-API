@@ -250,7 +250,7 @@ components:
       required:
       - documents
       properties:
-        selection_context:
+        server_context:
           type: string
           nullable: true
         documents:
@@ -346,7 +346,7 @@ components:
       properties:
         callback:
           $ref: '#/components/schemas/CallbackLink'
-        selection_context:
+        server_context:
           type: string
           nullable: true
         supported_file_extensions:
@@ -388,7 +388,7 @@ components:
       properties:
         callback:
           $ref: '#/components/schemas/CallbackLink'
-        upload_context:
+        server_context:
           type: string
           nullable: true
         files:
@@ -435,7 +435,7 @@ components:
       required:
         - documents_to_upload
       properties:
-        upload_context:
+        server_context:
           type: string
           nullable: true
         documents_to_upload:
