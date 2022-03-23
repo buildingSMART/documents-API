@@ -150,8 +150,6 @@ This use case is not yet supported. It will be added in the future.
 
 # 3. Services
 
-> **TODO** Mention that the spec doesn't make any assumptions about concurrency is handled, e.g. two users trying to upload a document version at the same time. Also think where to put this paragraph😀
-
 ## 3.1 Open API (Swagger) Specification - The Single Source of Truth
 
 Documents API is specified using [Open API](https://www.openapis.org/). You can find the Open API specification [here](swagger.yaml). The specification can be used to automatically generate client and server code, although most of the endpoints will not work directly, since the API is built with few fixed endpoints. Most of the endpoints are discovered and received in the returned payloads of the calls. The dynamic endpoints start with `server-provided-path-`.
