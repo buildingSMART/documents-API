@@ -157,8 +157,6 @@ The motivation for using dynamic endpoints is to make the implementation of the 
 
 The Open API specification is the single source of truth for implementing the Documents API. This documentation is supporting material that clarifies different workflows. If there are any contradictions between this document and the Open API specification, the latter prevails.
 
-> **TODO** Explain how to use the Swagger spec, especially with regard to the dynamic urls.
-
 > **TODO** Link the open source implementation, mention how it's supported (expect bugs, but those will be addressed)
 
 ## 3.2. Document Download
