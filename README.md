@@ -31,9 +31,10 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
     - [2.2.2. Upload Files](#222-upload-files)
     - [2.2.3. Using Documents API and BCF API Together](#223-using-documents-api-and-bcf-api-together)
       - [2.2.3.1. BCF File References](#2231-bcf-file-references)
-    - [2.2.4 Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
+    - [2.2.4. Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
 - [3. Services](#3-services)
-  - [3.1 Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
+  - [3.1. Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
+    - [3.1.1. Open Source Example](#311-open-source-example)
   - [3.2. Document Download](#32-document-download)
     - [3.2.1. Document Download Example](#321-document-download-example)
       - [3.2.1.1. Step-by-Step Example](#3211-step-by-step-example)
@@ -144,20 +145,22 @@ In the example above, the CDE returns a value of `open-cde-documents://<document
 
 The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
-### 2.2.4 Automatic syncing of documents between two or more CDEs
+### 2.2.4. Automatic syncing of documents between two or more CDEs
 
 This use case is not yet supported. It will be added in the future.
 
 # 3. Services
 
-## 3.1 Open API (Swagger) Specification - The Single Source of Truth
+## 3.1. Open API (Swagger) Specification - The Single Source of Truth
 
 Documents API is specified using [Open API](https://www.openapis.org/). You can find the Open API specification [here](swagger.yaml). The specification can be used to automatically generate client and server code, although most of the endpoints will not work directly, since the API is built with few fixed endpoints. Most of the endpoints are discovered and received in the returned payloads of the calls. The dynamic endpoints start with `server-provided-path-`.
 The motivation for using dynamic endpoints is to make the implementation of the API on the server easy and efficient. For example, when a link to download a document is retrieved from the service, that link can point to an already existing API end point, or event to a third parth file hosting service.
 
 The Open API specification is the single source of truth for implementing the Documents API. This documentation is supporting material that clarifies different workflows. If there are any contradictions between this document and the Open API specification, the latter prevails.
 
-> **TODO** Link the open source implementation, mention how it's supported (expect bugs, but those will be addressed)
+### 3.1.1. Open Source Example
+
+There is an open [source example project available](https://github.com/Dangl-IT/Dangl.OpenCDE), which contains both a desktop based client app as well as a server implementation.
 
 ## 3.2. Document Download
 
