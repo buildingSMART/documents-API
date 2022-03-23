@@ -164,15 +164,9 @@ There is an open [source example project available](https://github.com/Dangl-IT/
 
 ## 3.2. Document Download
 
-> **TODO** Text description, and flow sequence diagram.
-
 ### 3.2.1. Document Download Example
 
 ![Document Download Sequence Diagram](./Diagrams/Document_Download.png)
-
-> **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
-
-> **TODO** See <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>, we should make the _reference_ from the BCF-API be the url that is returned here for the download as to better integrate the two APIs,
 
 #### 3.2.1.1. Step-by-Step Example
 
