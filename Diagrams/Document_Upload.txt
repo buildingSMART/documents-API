@@ -1,24 +1,24 @@
 title Documents API Upload Flow
 
-participant Client
-participant "Browser (Server UI)" as Browser
-participant Server
-participant "Server Storage Provider" as Storage
+participant Client Application
+participant "Browser (CDE UI)" as Browser
+participant CDE
+participant "CDE Storage Provider" as Storage
 
-note over Client,Server: The client initiates the document selection
-Client->Server: POST /upload-documents\nRequest body:\n{\n	"callback": {\n	  "url": "http://<local_callback_url>",\n    "expires_in": 3600\n	},\n  "files": [\n    {\n      "file_name": "model.ifc",\n      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b"\n    }\n  ]\n}
-Server-->Client: Response body:\n{\n  "upload_ui_url": "https://<upload_documents_url>",\n  "expires_in": 3600,\n  "max_size_in_bytes": 1073741824\n}
-note over Client,Browser: Select documents
-Client->Browser: BROWSER https://<upload_documents_url>
+note over Client Application,CDE: The client initiates the document selection
+Client Application->CDE: POST /upload-documents\nRequest body:\n{\n	"callback": {\n	  "url": "http://<local_callback_url>",\n    "expires_in": 3600\n	},\n  "files": [\n    {\n      "file_name": "model.ifc",\n      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b"\n    }\n  ]\n}
+CDE-->Client Application: Response body:\n{\n  "upload_ui_url": "https://<upload_documents_url>",\n  "expires_in": 3600,\n  "max_size_in_bytes": 1073741824\n}
+note over Client Application,Browser: Select documents
+Client Application->Browser: BROWSER https://<upload_documents_url>
 note over Browser:User selects or creates documents in the server UI,\nadds metadata specific for the CDE as required
-Browser-->Client:Browser triggers the clients local callback url\nhttps://<local_callback_url>?upload_documents_url=https://<server_upload_documents_url>
-Client->Server: POST /<server_upload_documents_url>\nRequest body:\n{\n  "files": [\n    {\n      "size_in_bytes": 1048576,\n      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b"\n    }\n  ]\n}
-Server-->Client:Response body:\n{\n  "server_context": "aa549eec-b0de-4ee3-86e6-7ecf84e8126d",\n  "documents_to_upload": [\n    {\n      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b",\n      "upload_file_parts": [\n        {\n          "url": "https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356",\n          "http_method": "PUT",\n          "additional_headers": {\n            "values": [\n              {\n                "name": "Content-Length",\n                "value": "524288"\n              }\n            ]\n          },\n          "include_authorization": false,\n          "multipart_form_data": null,\n          "content_range_start": 0,\n          "content_range_end": 524287\n        },\n        {\n          "url": "https://cde-storage.example.com/2271db11-e24b-4b8c-9622-3ed63dc38e48",\n          "http_method": "PUT",\n          "additional_headers": {\n            "values": [\n              {\n                "name": "Content-Length",\n                "value": "524288"\n              }\n            ]\n          },\n          "include_authorization": false,\n          "multipart_form_data": null,\n          "content_range_start": 524288,\n          "content_range_end": 1048575\n        }\n      ],\n      "upload_completion": {\n        "url": "https://<server_provided_completion_url>"\n      },\n      "upload_cancellation": {\n        "url": "https://<server_provided_cancellation_url>"\n      }\n    }\n  ]\n}
-note over Client,Storage:The client splits the file for upload into two parts and then uploads those parts to a third party storage provider.
-Client->Storage:PUT https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356\nHeaders:\nContent-Length: 524288\nRequest body:\nBinary chunk, byte range 0 to 524287
-Storage-->Client: Any success status code response
-Client->Storage:PUT https://cde-storage.example.com/2271db11-e24b-4b8c-9622-3ed63dc38e48\nHeaders:\nContent-Length: 524288\nRequest body:\nBinary chunk, byte range 524288 to 1048575
-Storage-->Client: Any success status code response
-Client->Server: POST: /<server_provided_completion_url>\nNo request body.
-Server-->Client: Response body:\n{\n  "links": {\n    "document_version": {\n      "url": "https://<document_version_url>"\n    },\n    "document_version_metadata": {\n      "url": "https://<document_version_metadata_url>"\n    },\n    "document_version_download": {\n      "url": "https://<document_version_download_url>"\n    },\n    "document_versions": {\n      "url": "https://<document_versions_url>"\n    },\n    "document_details": {\n      "url": "https://<document_details_url>"\n    }\n  },\n  "version_number": "v3.0",\n  "version_index": 3,\n  "creation_date": "2022-02-14T08:02:53.866Z",\n  "title": "Sample Document",\n  "file_description": {\n    "name": "model.ifc",\n    "size_in_bytes": 1048576\n  },\n  "document_id": "bf546064-6b97-4730-a094-c21ab929c91a"\n}
-note over Client, Storage:The document is succesfully uploaded to the CDE.
+Browser-->Client Application:Browser triggers the clients local callback url\nhttps://<local_callback_url>?upload_documents_url=https://<server_upload_documents_url>
+Client Application->CDE: POST /<server_upload_documents_url>\nRequest body:\n{\n  "files": [\n    {\n      "size_in_bytes": 1048576,\n      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b"\n    }\n  ]\n}
+CDE-->Client Application:Response body:\n{\n  "server_context": "aa549eec-b0de-4ee3-86e6-7ecf84e8126d",\n  "documents_to_upload": [\n    {\n      "session_file_id": "76ec9d91-0731-4405-b3c4-9bf945f9955b",\n      "upload_file_parts": [\n        {\n          "url": "https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356",\n          "http_method": "PUT",\n          "additional_headers": {\n            "values": [\n              {\n                "name": "Content-Length",\n                "value": "524288"\n              }\n            ]\n          },\n          "include_authorization": false,\n          "multipart_form_data": null,\n          "content_range_start": 0,\n          "content_range_end": 524287\n        },\n        {\n          "url": "https://cde-storage.example.com/2271db11-e24b-4b8c-9622-3ed63dc38e48",\n          "http_method": "PUT",\n          "additional_headers": {\n            "values": [\n              {\n                "name": "Content-Length",\n                "value": "524288"\n              }\n            ]\n          },\n          "include_authorization": false,\n          "multipart_form_data": null,\n          "content_range_start": 524288,\n          "content_range_end": 1048575\n        }\n      ],\n      "upload_completion": {\n        "url": "https://<server_provided_completion_url>"\n      },\n      "upload_cancellation": {\n        "url": "https://<server_provided_cancellation_url>"\n      }\n    }\n  ]\n}
+note over Client Application,Storage:The client splits the file for upload into two parts and then uploads those parts to a third party storage provider.
+Client Application->Storage:PUT https://cde-storage.example.com/8d9f94b5-125c-4f88-afbb-494bd9cd3356\nHeaders:\nContent-Length: 524288\nRequest body:\nBinary chunk, byte range 0 to 524287
+Storage-->Client Application: Any success status code response
+Client Application->Storage:PUT https://cde-storage.example.com/2271db11-e24b-4b8c-9622-3ed63dc38e48\nHeaders:\nContent-Length: 524288\nRequest body:\nBinary chunk, byte range 524288 to 1048575
+Storage-->Client Application: Any success status code response
+Client Application->CDE: POST: /<server_provided_completion_url>\nNo request body.
+CDE-->Client Application: Response body:\n{\n  "links": {\n    "document_version": {\n      "url": "https://<document_version_url>"\n    },\n    "document_version_metadata": {\n      "url": "https://<document_version_metadata_url>"\n    },\n    "document_version_download": {\n      "url": "https://<document_version_download_url>"\n    },\n    "document_versions": {\n      "url": "https://<document_versions_url>"\n    },\n    "document_details": {\n      "url": "https://<document_details_url>"\n    }\n  },\n  "version_number": "v3.0",\n  "version_index": 3,\n  "creation_date": "2022-02-14T08:02:53.866Z",\n  "title": "Sample Document",\n  "file_description": {\n    "name": "model.ifc",\n    "size_in_bytes": 1048576\n  },\n  "document_id": "bf546064-6b97-4730-a094-c21ab929c91a"\n}
+note over Client Application, Storage:The document is succesfully uploaded to the CDE.
