@@ -3,7 +3,7 @@
 
 [Swagger / OpenAPI Specification](./swagger.yaml). To view an interactive version of the Swagger specification, you can go to <https://editor.swagger.io/> and pase the content from the YAML file.
 
-> **TODO** Host the Swagger Spec directly, would improve the UX here. Maybe via GitHub pages? Or we could provide a static site.
+> **TODO** Host the Swagger Spec directly, would improve the UX here. Maybe via GitHub pages? Or we could provide a static site. Maybe also use the Swagger Hub from bSI
 
 # Documents API
 
@@ -31,9 +31,10 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
     - [2.2.2. Upload Files](#222-upload-files)
     - [2.2.3. Using Documents API and BCF API Together](#223-using-documents-api-and-bcf-api-together)
       - [2.2.3.1. BCF File References](#2231-bcf-file-references)
-    - [2.2.4 Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
+    - [2.2.4. Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
 - [3. Services](#3-services)
-  - [3.1 Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
+  - [3.1. Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
+    - [3.1.1. Open Source Example](#311-open-source-example)
   - [3.2. Document Download](#32-document-download)
     - [3.2.1. Document Download Example](#321-document-download-example)
       - [3.2.1.1. Step-by-Step Example](#3211-step-by-step-example)
@@ -78,8 +79,6 @@ The Documents API identifies the following actors:
 - User - A human, performing a task requiring the download or the upload of files
 - Client Application - A desktop Application or a Web Application used by the User to perform her task
 - Common Data Environment (CDE or Server) - A cloud application hosting files for a construction project
-
-> **TODO** Unify how the actors are referred to, e.g. always uppercase, maybe italicized, so be consistent throughout the docs.
 
 <p align="center">
   <img src="Images/CDE_Overview_Diagram.png">
@@ -144,36 +143,28 @@ In the example above, the CDE returns a value of `open-cde-documents://<document
 
 The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
-### 2.2.4 Automatic syncing of documents between two or more CDEs
+### 2.2.4. Automatic syncing of documents between two or more CDEs
 
 This use case is not yet supported. It will be added in the future.
 
 # 3. Services
 
-> **TODO** Mention that the spec doesn't make any assumptions about concurrency is handled, e.g. two users trying to upload a document version at the same time. Also think where to put this paragraph😀
-
-## 3.1 Open API (Swagger) Specification - The Single Source of Truth
+## 3.1. Open API (Swagger) Specification - The Single Source of Truth
 
 Documents API is specified using [Open API](https://www.openapis.org/). You can find the Open API specification [here](swagger.yaml). The specification can be used to automatically generate client and server code, although most of the endpoints will not work directly, since the API is built with few fixed endpoints. Most of the endpoints are discovered and received in the returned payloads of the calls. The dynamic endpoints start with `server-provided-path-`.
 The motivation for using dynamic endpoints is to make the implementation of the API on the server easy and efficient. For example, when a link to download a document is retrieved from the service, that link can point to an already existing API end point, or event to a third parth file hosting service.
 
 The Open API specification is the single source of truth for implementing the Documents API. This documentation is supporting material that clarifies different workflows. If there are any contradictions between this document and the Open API specification, the latter prevails.
 
-> **TODO** Explain how to use the Swagger spec, especially with regard to the dynamic urls.
+### 3.1.1. Open Source Example
 
-> **TODO** Link the open source implementation, mention how it's supported (expect bugs, but those will be addressed)
+There is an open [source example project available](https://github.com/Dangl-IT/Dangl.OpenCDE), which contains both a desktop based client app as well as a server implementation.
 
 ## 3.2. Document Download
-
-> **TODO** Text description, and flow sequence diagram.
 
 ### 3.2.1. Document Download Example
 
 ![Document Download Sequence Diagram](./Diagrams/Document_Download.png)
-
-> **TODO** Add examples, with requests and maybe mock up "screenshots". Maybe move examples to a different file and just link it here, to avoid cluttering.
-
-> **TODO** See <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>, we should make the _reference_ from the BCF-API be the url that is returned here for the download as to better integrate the two APIs,
 
 #### 3.2.1.1. Step-by-Step Example
 
@@ -276,10 +267,6 @@ The `documents` array contains a list of all the document version objects that t
 | `document_details`          | This optional url points to the CDE UI itself, meaning it can be opened by the local browser to show the document version in the native CDE UI |
 
 ## 3.3. Document Upload
-
-> **TODO** Add reference to the sequence diagram generator tool, for later editing and new collaborators
-
-> **TODO** Text description, and flow sequence diagram.
 
 ### 3.3.1. Binary File Upload
 
