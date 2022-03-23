@@ -80,8 +80,6 @@ The Documents API identifies the following actors:
 - Client Application - A desktop Application or a Web Application used by the User to perform her task
 - Common Data Environment (CDE or Server) - A cloud application hosting files for a construction project
 
-> **TODO** Unify how the actors are referred to, e.g. always uppercase, maybe italicized, so be consistent throughout the docs.
-
 <p align="center">
   <img src="Images/CDE_Overview_Diagram.png">
 </p>
