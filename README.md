@@ -87,7 +87,7 @@ The Documents API identifies the following actors:
 
 ## 2.1. How does the Document API work?
 
-The Documents API is designed to allow a User working with any Client Applications to upload and download files on any CDE. This is accomplished by a file-based API between the Application and the CDE. The Documents API also includes a hand-shake that would allow the Application to direct the User to the CDE's web interface when needed. For example: when commencing a document download the user would search and select Documents on the CDE's web interface. The actual file download is then performed in a direct API made by the Application to the CDE.
+The Documents API is designed to allow a User working with a compatible Client Applications to upload and download files from any compatible CDE. This is accomplished by a hand-shake that allows the Client Application to direct the User to the CDE's web interface when the User's interaction with the CDE is needed. The CDE retains the information entered by the User and communicates with the Client using a file-based API. For example: When commencing a document download the User would search and select Documents on the CDE's web interface. The Client Application performs the actual file download using a direct, file-based API call to the CDE.
 
 ## 2.2. Use Cases
 
@@ -95,7 +95,7 @@ The Documents API is designed to support the following use cases:
 
 ### 2.2.1. Download Files
 
-The User, using the Application searches files on the CDE and selects files to download. The Application then downloads the files and makes them available to the User in the Application.
+The User, using the Client Application searches for files on the CDE's web UI and selects files to download. The Client Application then downloads the files and makes them available to the User who performs their task in the Client Application.
 
 <p align="center">
   <img src="Images/download-storyboard.png">
@@ -103,26 +103,26 @@ The User, using the Application searches files on the CDE and selects files to d
 
 #### 2.2.1.1. Automatic download of a file previously uploaded or downloaded
 
-The Application detects, using previously stored information, that new document versions exists. The Application obtains the User's approval and downloads the new version and makes the files available to the User.
+The Client Application detects, using previously stored information, that new document versions exists. The Client Application obtains the User's approval and downloads the new versions and makes the files available to the User.
 
 ### 2.2.2. Upload Files
 
-The User, using the Application, selects local files to upload to the CDE. The Application directs to user to the CDE Web UI. The user enters, for each file, the required document metadata on the CDE. The Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers a new document. The user can continue workin while the files are uploaded in the background.
+The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the required document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The uUer can continue using the Client Application while the files are uploaded in the background.
 
 <p align="center">
   <img src="Images/upload-storyboard.png">
 </p>
 
-### 2.2.3. Using Documents API and BCF API Together
+### 2.2.3. Using the Documents API and BCF API Together
 
-Documents API and BCF API can be used together in an Application that has implemented both APIs. A user who is working with an Application that implements both APIs can download the Models directly from the CDE using the Documents API and create issues about them using the BCF API. A configuration, where documents are controlled by one CDE and BCF issues are controlled by another CDE is also supported.
+Documents API and BCF API can be used together by a Client Application that has implemented both APIs. A User who is working with a Client Application that implements both APIs can download models directly from the CDE using the Documents API and manage issues relating to those models using the BCF API. A configuration, where documents are controlled by one CDE and BCF issues are controlled by another CDE is also supported.
 
 #### 2.2.3.1. BCF File References
 
-BCF API compatible servers offer endpoints to list project model files, which are stored on a CDE. To connect the model resolution from BCF API file references with documents stored on a CDE implementing the Documents API, the `reference` part of a `file_GET` is returned by the BCF server with a specific protocol `documents` and a link to the `document_version` url on the CDE server.  
+BCF API compatible CDEs offer endpoints to list project model files, which are stored on a CDE. To connect the model resolution from BCF API file references with documents stored on a CDE implementing the Documents API, the `reference` part of a `file_GET` is returned by the BCF server with a specific protocol `documents` and a link to the `document_version` url on the CDE server.  
 The scheme for the actual request to obtain the document version data is assumed to be `https`.
 
-BCF API `file_GET` example:
+BCF API `project_file_information` example:
 
 ```json
 {
@@ -140,7 +140,7 @@ BCF API `file_GET` example:
 }
 ```
 
-In the example above, the BCF server returns a value of `open-cde-documents://<document_version_url>` for the file `reference` part, indicating that this is an url that should be accessed with a Documents API capable client to get the document version endpoint. From there on, compatible clients can retrieve metadata and the binary content of the file.
+In the example above, the CDE returns a value of `open-cde-documents://<document_version_url>` for the file `reference` part, indicating that this is a url that should be accessed with a Documents API capable client to get the document version endpoint. From there on, compatible clients can retrieve metadata and the binary content of the file.
 
 The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
