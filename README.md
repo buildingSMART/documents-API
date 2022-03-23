@@ -270,10 +270,6 @@ The `documents` array contains a list of all the document version objects that t
 
 ## 3.3. Document Upload
 
-> **TODO** Add reference to the sequence diagram generator tool, for later editing and new collaborators
-
-> **TODO** Text description, and flow sequence diagram.
-
 ### 3.3.1. Binary File Upload
 
 #### 3.3.1.1. Multipart Upload Considerations & Implementation Notes
