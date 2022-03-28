@@ -29,7 +29,7 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
     - [2.2.1. Download Files](#221-download-files)
       - [2.2.1.1. Automatic download of a file previously uploaded or downloaded](#2211-automatic-download-of-a-file-previously-uploaded-or-downloaded)
     - [2.2.2. Upload Files](#222-upload-files)
-    - [2.2.3. Using Documents API and BCF API Together](#223-using-documents-api-and-bcf-api-together)
+    - [2.2.3. Using the Documents API and BCF API Together](#223-using-the-documents-api-and-bcf-api-together)
       - [2.2.3.1. BCF File References](#2231-bcf-file-references)
     - [2.2.4. Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
 - [3. Services](#3-services)
@@ -57,7 +57,6 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
         - [3.3.2.2.5. Binary File Upload](#33225-binary-file-upload)
         - [3.3.2.2.6. Upload Completion](#33226-upload-completion)
         - [3.3.2.2.7. Upload Cancellation](#33227-upload-cancellation)
-- [4. Acknowledgements / History](#4-acknowledgements--history)
 
 markdown-toc</a></i></small>
 
@@ -518,7 +517,3 @@ The client just sends a `POST` request without a body to this endpoint and recei
 If the client or the user decide to cancel the upload, the server must be notified via the upload cancellation endpoint. In this example, the url for this endpoint was returned as `https://cde.example.com/upload-cancellation?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`.
 
 The client just sends a `POST` request without a body and receives an empty response with status code `204 - No Content`.
-
-# 4. Acknowledgements / History
-
-> **TODO** Maybe list companies that contributed in the original DocumentsAPI Project in 2021/2022?
