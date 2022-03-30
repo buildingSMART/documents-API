@@ -54,8 +54,6 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
         - [3.3.2.2.6. Upload Completion](#33226-upload-completion)
         - [3.3.2.2.7. Upload Cancellation](#33227-upload-cancellation)
 
-markdown-toc</a></i></small>
-
 <!-- tocstop -->
 
 # 1. Introduction
