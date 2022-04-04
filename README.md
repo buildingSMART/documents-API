@@ -531,6 +531,7 @@ In this example, the client locally has synced two documents. To periodically qu
 POST /document-versions
 Body:
 {
+  "since": "2022-03-08T07:02:35Z",
   "document_ids": [
     "bf546064-6b97-4730-a094-c21ab929c91a",
     "07ac6f01-b996-4a56-b5bb-8a30c0eb53e3"
@@ -538,6 +539,7 @@ Body:
 }
 ```
 
+The optional `since` parameter is supplied to instruct the CDE to only return document versions created after the given date. This is useful for clients that may want to set their latest query date, as to ensure to only receive document versions that have been changed since the last polling.  
 As a response, the CDE returns the latest _DocumentVersion_ for both documents.
 
 ```
