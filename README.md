@@ -540,7 +540,7 @@ Body:
 ```
 
 The `since` parameter is supplied to instruct the CDE to only return document versions created after the given date.  
-As a response, the CDE returns the latest _DocumentVersion_ for both documents.
+As a response, the CDE returns the latest _DocumentVersion_ for both documents. In case there have been multiple new versions for a given document after the date provided via `since`, all those newer versions will be included in the response.
 
 ```json
 Headers:
