@@ -532,6 +532,7 @@ POST /document-versions
 Body:
 {
   "since": "2022-03-08T07:02:35Z",
+  "latest_only": false,
   "document_ids": [
     "bf546064-6b97-4730-a094-c21ab929c91a",
     "07ac6f01-b996-4a56-b5bb-8a30c0eb53e3"

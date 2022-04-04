@@ -529,6 +529,10 @@ components:
           type: string
           format: date-time
           minLength: 1
+        latest_only:
+          description: 'If this is set to true, the response will only contain the latest version after the since date (if there is one) for each document, otherwise all document versions newer than the specified since date are included.'
+          type: boolean
+          default: false
     DocumentQueryResult:
       type: object
       description: 'The versions array contains all the document version objects that have been changed since the given date.'
