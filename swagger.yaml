@@ -525,7 +525,7 @@ components:
           items:
             type: string
         since:
-          description: 'This parameter instructs the CDE to only return document versions newer than the given value. The date time is must include timezone information, otherwise it is always assumed to be in UTC.'
+          description: 'This parameter instructs the CDE to only return document versions newer than the given value. The date time must include timezone information, otherwise it is always assumed to be in UTC.'
           type: string
           format: date-time
           minLength: 1
