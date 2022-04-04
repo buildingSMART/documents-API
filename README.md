@@ -539,15 +539,43 @@ Body:
 }
 ```
 
-The optional `since` parameter is supplied to instruct the CDE to only return document versions created after the given date. This is useful for clients that may want to set their latest query date, as to ensure to only receive document versions that have been changed since the last polling.  
+The `since` parameter is supplied to instruct the CDE to only return document versions created after the given date.  
 As a response, the CDE returns the latest _DocumentVersion_ for both documents.
 
-```
+```json
 Headers:
 ETag: f1899e079df28604c59ea51eb41a5bfd
 Body:
 {
   "versions": [
+    {
+      "links": {
+        "document_version": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v4.0"
+        },
+        "document_version_metadata": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v4.0/metadata"
+        },
+        "document_version_download": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v4.0/download"
+        },
+        "document_versions": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions"
+        },
+        "document_details": {
+          "url": "https://cde.example.com/ui/projects/12485/documents/bf546064-6b97-4730-a094-c21ab929c91a/v4.0"
+        }
+      },
+      "version_number": "v4.0",
+      "version_index": 4,
+      "creation_date": "2022-03-19T08:02:53.866Z",
+      "title": "Sample Document",
+      "file_description": {
+        "name": "model.ifc",
+        "size_in_bytes": 1048576
+      },
+      "document_id": "bf546064-6b97-4730-a094-c21ab929c91a"
+    },
     {
       "links": {
         "document_version": {

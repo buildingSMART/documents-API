@@ -518,17 +518,20 @@ components:
       type: object
       required:
         - document_ids
+        - since
       properties:
         document_ids:
           type: array
           items:
             type: string
         since:
-          description: 'This optional parameter can be supplied to include include document versions newer than the given value. The date time is must include timezone information, otherwise it is always assumed to be in UTC.'
+          description: 'This parameter instructs the CDE to only return document versions newer than the given value. The date time is must include timezone information, otherwise it is always assumed to be in UTC.'
           type: string
           format: date-time
+          minLength: 1
     DocumentQueryResult:
       type: object
+      description: 'The versions array contains all the document version objects that have been changed since the given date.'
       required:
         - versions
       properties:
