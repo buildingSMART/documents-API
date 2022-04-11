@@ -531,8 +531,6 @@ In this example, the client locally has synced two documents. To periodically qu
 POST /document-versions
 Body:
 {
-  "since": "2022-03-08T07:02:35Z",
-  "latest_only": false,
   "document_ids": [
     "bf546064-6b97-4730-a094-c21ab929c91a",
     "07ac6f01-b996-4a56-b5bb-8a30c0eb53e3"
@@ -540,8 +538,7 @@ Body:
 }
 ```
 
-The `since` parameter is supplied to instruct the CDE to only return document versions created after the given date.  
-As a response, the CDE returns the latest _DocumentVersion_ for both documents. In case there have been multiple new versions for a given document after the date provided via `since`, all those newer versions will be included in the response. There is no guarantee about how the entries in the response are ordered.
+As a response, the CDE returns the latest _DocumentVersion_ for both documents. There is no guarantee about how the entries in the response are ordered.
 
 ```json
 Headers:
