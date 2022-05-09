@@ -141,6 +141,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentUploadSessionInitialization'
+  /document-versions:
+    post:
+      tags:
+        - Query
+      description: This endpoint must be called when querying the latest versions for multiple documents. It's an aggregate endpoint that should make periodic polling of a collection of documents easier. Servers must also support the ETag header for this endpoint, so clients may specifiy to receive a response object in case of changes on the server since the last query. It will return a list of DocumentVersion objects, where each DocumentVersion represents the latest version for each given document on the server.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentQuery'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentQueryResult'
 components:
   schemas:
     DocumentMetadata:
@@ -497,3 +514,22 @@ components:
         value:
           type: string
           minLength: 1
+    DocumentQuery:
+      type: object
+      required:
+        - document_ids
+      properties:
+        document_ids:
+          type: array
+          items:
+            type: string
+    DocumentQueryResult:
+      type: object
+      description: 'The versions array contains all the latest document version objects.'
+      required:
+        - versions
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentVersion'

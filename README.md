@@ -53,6 +53,11 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
         - [3.3.2.2.5. Binary File Upload](#33225-binary-file-upload)
         - [3.3.2.2.6. Upload Completion](#33226-upload-completion)
         - [3.3.2.2.7. Upload Cancellation](#33227-upload-cancellation)
+  - [3.4. Document Query](#34-document-query)
+    - [3.4.1. Document Query Example](#341-document-query-example)
+    - [3.4.2. Query Recommendations](#342-query-recommendations)
+      - [3.4.2.1. ETag Header](#3421-etag-header)
+      - [3.4.2.2. Polling Frequency](#3422-polling-frequency)
 
 <!-- tocstop -->
 
@@ -511,3 +516,134 @@ The client just sends a `POST` request without a body to this endpoint and recei
 If the client or the user decide to cancel the upload, the server must be notified via the upload cancellation endpoint. In this example, the url for this endpoint was returned as `https://cde.example.com/upload-cancellation?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`.
 
 The client just sends a `POST` request without a body and receives an empty response with status code `204 - No Content`.
+
+## 3.4. Document Query
+
+Clients typically want to track changes to synced documents between the local versions and the latest state on the CDE. To prevent clients having to periodically poll multiple document version endpoints, the _Document Query_ endpoint should be used instead.
+
+There, the client can send a list of all tracked `document_ids` and receive the latest _DocumentVersion_ for each of those.
+
+### 3.4.1. Document Query Example
+
+In this example, the client locally has synced two documents. To periodically query if any new versions are available, the client sends the following request to the CDE:
+
+```
+POST /document-versions
+Body:
+{
+  "document_ids": [
+    "bf546064-6b97-4730-a094-c21ab929c91a",
+    "07ac6f01-b996-4a56-b5bb-8a30c0eb53e3"
+  ]
+}
+```
+
+As a response, the CDE returns the latest _DocumentVersion_ for both documents. There is no guarantee about how the entries in the response are ordered.
+
+```json
+Headers:
+ETag: f1899e079df28604c59ea51eb41a5bfd
+Body:
+{
+  "versions": [
+    {
+      "links": {
+        "document_version": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v4.0"
+        },
+        "document_version_metadata": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v4.0/metadata"
+        },
+        "document_version_download": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v4.0/download"
+        },
+        "document_versions": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions"
+        },
+        "document_details": {
+          "url": "https://cde.example.com/ui/projects/12485/documents/bf546064-6b97-4730-a094-c21ab929c91a/v4.0"
+        }
+      },
+      "version_number": "v4.0",
+      "version_index": 4,
+      "creation_date": "2022-03-19T08:02:53.866Z",
+      "title": "Sample Document",
+      "file_description": {
+        "name": "model.ifc",
+        "size_in_bytes": 1048576
+      },
+      "document_id": "bf546064-6b97-4730-a094-c21ab929c91a"
+    },
+    {
+      "links": {
+        "document_version": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0"
+        },
+        "document_version_metadata": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0/metadata"
+        },
+        "document_version_download": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions/v3.0/download"
+        },
+        "document_versions": {
+          "url": "https://cde.example.com/documents/bf546064-6b97-4730-a094-c21ab929c91a/versions"
+        },
+        "document_details": {
+          "url": "https://cde.example.com/ui/projects/12485/documents/bf546064-6b97-4730-a094-c21ab929c91a/v3.0"
+        }
+      },
+      "version_number": "v3.0",
+      "version_index": 3,
+      "creation_date": "2022-03-09T08:02:53.866Z",
+      "title": "Sample Document",
+      "file_description": {
+        "name": "model.ifc",
+        "size_in_bytes": 1048576
+      },
+      "document_id": "bf546064-6b97-4730-a094-c21ab929c91a"
+    },
+    {
+      "links": {
+        "document_version": {
+          "url": "https://cde.example.com/documents/07ac6f01-b996-4a56-b5bb-8a30c0eb53e3/versions/v3.0"
+        },
+        "document_version_metadata": {
+          "url": "https://cde.example.com/documents/07ac6f01-b996-4a56-b5bb-8a30c0eb53e3/versions/v3.0/metadata"
+        },
+        "document_version_download": {
+          "url": "https://cde.example.com/documents/07ac6f01-b996-4a56-b5bb-8a30c0eb53e3/versions/v3.0/download"
+        },
+        "document_versions": {
+          "url": "https://cde.example.com/documents/07ac6f01-b996-4a56-b5bb-8a30c0eb53e3/versions"
+        },
+        "document_details": {
+          "url": "https://cde.example.com/ui/projects/12485/documents/07ac6f01-b996-4a56-b5bb-8a30c0eb53e3/v1.0"
+        }
+      },
+      "version_number": "v1.0",
+      "version_index": 1,
+      "creation_date": "2022-03-28T15:41:42.136Z",
+      "title": "Additional Document",
+      "file_description": {
+        "name": "specs.pdf",
+        "size_in_bytes": 7548
+      },
+      "document_id": "07ac6f01-b996-4a56-b5bb-8a30c0eb53e3"
+    }
+  ]
+}
+```
+
+### 3.4.2. Query Recommendations
+
+#### 3.4.2.1. ETag Header
+
+To reduce both bandwith and server load, it is strongly recommended to honor the `ETag` header when accessing the query endpoint. The `ETag` header is a value that is guaranteed to change once the response on the server changes. Clients that have done a successful polling may send the initially retrieved `ETag` headers value in a header named `If-None-Match`, where servers may then simply return `304 - Not Modified` as a response without any actual content present.
+
+`ETag` can generally be simply constructed. Many server side technologies already support this out of the box. Alternatively, an `ETag` can simply be constructed by hashing e.g. the values of `creation_date` for all queried documents, therefore allowing the CDE to quickly decide if all document data must be loaded and processed to serve the request.
+
+More detailed information about the `ETag` header is part of the _Foundation API_.
+
+#### 3.4.2.2. Polling Frequency
+
+Frequent polling may result in high load on CDE servers. Clients therefore should not send queries more frequent than once every 5 minutes.
