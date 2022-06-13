@@ -128,6 +128,7 @@ paths:
     post:
       tags:
         - Upload
+      description: The body of this request contains a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters. After a document upload has been prepared, the CDE will issue a redirect to the provided callback url with a query parameter called `upload_documents_url`. By calling this url, the client can continue with the upload flow, it corresponds to the server specific location of `/server-provided-path-upload-documents-url`.
       requestBody:
         content:
           application/json:
