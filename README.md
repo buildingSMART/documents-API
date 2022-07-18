@@ -270,7 +270,7 @@ The `documents` array contains a list of all the document version objects that t
 
 #### 3.3.1.1. Multipart Upload Considerations & Implementation Notes
 
-Uploading documents to a CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional meta data that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
+Uploading documents to a CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional metadata that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
 
 #### 3.3.1.2. Identifying Files During the Workflow
 
