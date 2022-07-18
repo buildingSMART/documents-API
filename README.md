@@ -203,7 +203,7 @@ The server returns a response to inform the client about the `selected_documents
 
 The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
 Here, the user is seeing the native CDE UI, which they use to search for and select documents. After the user has done the selection, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this download session, e.g. `http://localhost:8080/cde-callback-example?selected_documents_url=https%3A%2F%2Fcde.example.com%2Fdownload-instructions%3Fsession_id%3Db59dab23-79a4-4e66-a1a7-8837871604fa`.  
-In the example, the browser is being redirect to the local callback url for the client, and transports the url of the endpoint in the `selected_documents_url` query parameter, in this case with a value of `https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa`. Please note that the actual value is url encoded.
+In the example, the browser is being redirected to the local callback url for the client, and transports the url of the endpoint in the `selected_documents_url` query parameter, in this case with a value of `https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa`. Please note that the actual value is url encoded.
 
 > Note: Most CDEs use a direct login link with the `selected_documents_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
 
