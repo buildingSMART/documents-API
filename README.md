@@ -75,7 +75,7 @@ The foundation API specifies a small number of services and a few conventions th
 The Documents API identifies the following actors:
 
 - User - A human, performing a task requiring the download or the upload of files
-- Client Application - A desktop Application or a Web Application used by the User to perform her task
+- Client Application - A desktop application or a web application used by the User to perform her task
 - Common Data Environment (CDE or Server) - A cloud application hosting files for a construction project
 
 <p align="center">
