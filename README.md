@@ -23,11 +23,11 @@ The Open CDE workgroup also develops the BCF standard. The group meets every sec
   - [2.1. How does the Document API work?](#21-how-does-the-document-api-work)
   - [2.2. Use Cases](#22-use-cases)
     - [2.2.1. Download Files](#221-download-files)
-      - [2.2.1.1. Automatic download of a file previously uploaded or downloaded](#2211-automatic-download-of-a-file-previously-uploaded-or-downloaded)
+      - [2.2.1.1. Automatic Download of a File Previously Uploaded or Downloaded](#2211-automatic-download-of-a-file-previously-uploaded-or-downloaded)
     - [2.2.2. Upload Files](#222-upload-files)
     - [2.2.3. Using the Documents API and BCF API Together](#223-using-the-documents-api-and-bcf-api-together)
       - [2.2.3.1. BCF File References](#2231-bcf-file-references)
-    - [2.2.4. Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
+    - [2.2.4. Automatic Syncing of Documents Between Two or More CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
 - [3. Services](#3-services)
   - [3.1. Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
     - [3.1.1. Open Source Example](#311-open-source-example)
@@ -98,7 +98,7 @@ The User, using the Client Application searches for files on the CDE's web UI an
   <img src="Images/download-storyboard.png">
 </p>
 
-#### 2.2.1.1. Automatic download of a file previously uploaded or downloaded
+#### 2.2.1.1. Automatic Download of a File Previously Uploaded or Downloaded
 
 The Client Application detects, using previously stored information, that new document versions exists. The Client Application obtains the User's approval and downloads the new versions and makes the files available to the User.
 
@@ -141,7 +141,7 @@ In the example above, the CDE returns a value of `open-cde-documents://<document
 
 The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
-### 2.2.4. Automatic syncing of documents between two or more CDEs
+### 2.2.4. Automatic Syncing of Documents Between Two or More CDEs
 
 This use case is not yet supported. It will be added in the future.
 
