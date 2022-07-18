@@ -104,7 +104,7 @@ The Client Application detects, using previously stored information, that new do
 
 ### 2.2.2. Upload Files
 
-The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the required document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The uUer can continue using the Client Application while the files are uploaded in the background.
+The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the required document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The User can continue using the Client Application while the files are uploaded in the background.
 
 <p align="center">
   <img src="Images/upload-storyboard.png">
