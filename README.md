@@ -11,12 +11,12 @@ The Documents API is designed to streamline the process of downloading and uploa
 
 ## Contributing
 
-The Open CDE workgroup also develops the BCF standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
+The Open CDE workgroup develops the Documents API standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
+
+# Table of Contents
 
 <!-- toc  https://ecotrust-canada.github.io/markdown-toc/ -->
 
-- [Documents API](#documents-api)
-  - [Contributing](#contributing)
 - [1. Introduction](#1-introduction)
   - [1.1. OpenCDE Foundation API](#11-opencde-foundation-api)
 - [2. Overview](#2-overview)
