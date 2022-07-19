@@ -100,11 +100,11 @@ The User, using the Client Application searches for files on the CDE's web UI an
 
 #### 2.2.1.1. Automatic Download of a File Previously Uploaded or Downloaded
 
-The Client Application calls the CDE to query for new versions of documents previously downloaded and/or uploaded by the user. The CDE responds that new document versions are available to download. The Client Application obtains the User's approval and downloads the new versions and makes them available to the User.
+The Client Application calls the CDE to query for new versions of documents previously downloaded and/or uploaded by the User. The CDE responds that new document versions are available to download. The Client Application obtains the User's approval and downloads the new versions and makes them available to the User.
 
 ### 2.2.2. Upload Files
 
-The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The User can continue using the Client Application while the files are uploaded in the background.
+The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the User to the CDE Web UI where the User enters, for each file, the document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The User can continue using the Client Application while the files are uploaded in the background.
 
 <p align="center">
   <img src="Images/upload-storyboard.png">
