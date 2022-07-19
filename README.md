@@ -100,11 +100,11 @@ The User, using the Client Application searches for files on the CDE's web UI an
 
 #### 2.2.1.1. Automatic Download of a File Previously Uploaded or Downloaded
 
-The Client Application detects, using previously stored information, that new document versions exists. The Client Application obtains the User's approval and downloads the new versions and makes the files available to the User.
+The Client Application calls the CDE to query for new versions of documents previously downloaded and/or uploaded by the user. The CDE responds that new document versions are available to download. The Client Application obtains the User's approval and downloads the new versions and makes them available to the User.
 
 ### 2.2.2. Upload Files
 
-The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the required document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The User can continue using the Client Application while the files are uploaded in the background.
+The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The User can continue using the Client Application while the files are uploaded in the background.
 
 <p align="center">
   <img src="Images/upload-storyboard.png">
@@ -116,8 +116,9 @@ Documents API and BCF API can be used together by a Client Application that has 
 
 #### 2.2.3.1. BCF File References
 
-BCF API compatible CDEs offer endpoints to list project model files, which are stored on a CDE. To connect the model resolution from BCF API file references with documents stored on a CDE implementing the Documents API, the `reference` part of a `file_GET` is returned by the BCF server with a specific protocol `documents` and a link to the `document_version` url on the CDE server.  
-The scheme for the actual request to obtain the document version data is assumed to be `https`.
+BCF API compatible servers offer endpoints to list project model files, which are stored on a CDE. To indicate that models provided by BCF API file-references can be downloaded from the CDE using the Documents API, the `reference` part of a `file_GET` response from the BCF server will include the URL scheme (protocol) `open-cde-documents` and a link to the `document_version` URL on the CDE. 
+
+The actual URL scheme (protocol) that a Client Application should use to call the `document_version` URL should be `https`.
 
 BCF API `project_file_information` example:
 
@@ -137,9 +138,9 @@ BCF API `project_file_information` example:
 }
 ```
 
-In the example above, the CDE returns a value of `open-cde-documents://<document_version_url>` for the file `reference` part, indicating that this is a url that should be accessed with a Documents API capable client to get the document version endpoint. From there on, compatible clients can retrieve metadata and the binary content of the file.
+In the example above, the CDE returns a value of `open-cde-documents://<document_version_url>` for the file `reference` part, indicating that a Documents API capable client can call `https://<document_version_url>` to get the document version information. From there on, compatible clients can retrieve metadata and the binary content of the file.
 
-The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
+The BCF API documentation about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
 ### 2.2.4. Automatic Syncing of Documents Between Two or More CDEs
 
