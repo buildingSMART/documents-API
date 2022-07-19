@@ -7,11 +7,11 @@
 
 <img src="./Images/CDE_Logo.png" width="200" height="200">
 
-The Documents API is designed to streamline the process of downloading and uploading files to a common data environment (CDE). This specification details the _selection_ or _discovery_, _download_ and _upload_ of files. When supported by both client and server, it provides an easy to use and integrated way of syncing cloud stored documents from within local applications. For the purpose of this specification a Documents consists of a file and its metadata.The scope of the Documents API includes all file types; The scope is not limited to building information models.
+The Documents API is designed to streamline the process of downloading and uploading files to a common data environment (CDE). This specification details the _selection_ or _discovery_, _download_ and _upload_ of files. When supported by both client and server, it provides an easy to use and integrated way of syncing cloud stored documents from within local applications. For the purpose of this specification, _a document_ consists of a file and its metadata. The scope of the Documents API includes all file types; the scope is not limited to building information models.
 
 ## Contributing
 
-The Open CDE workgroup develops the BCF standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
+The Open CDE workgroup also develops the BCF standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
 
 <!-- toc  https://ecotrust-canada.github.io/markdown-toc/ -->
 
@@ -23,11 +23,11 @@ The Open CDE workgroup develops the BCF standard. The group meets every second M
   - [2.1. How does the Document API work?](#21-how-does-the-document-api-work)
   - [2.2. Use Cases](#22-use-cases)
     - [2.2.1. Download Files](#221-download-files)
-      - [2.2.1.1. Automatic download of a file previously uploaded or downloaded](#2211-automatic-download-of-a-file-previously-uploaded-or-downloaded)
+      - [2.2.1.1. Automatic Download of a File Previously Uploaded or Downloaded](#2211-automatic-download-of-a-file-previously-uploaded-or-downloaded)
     - [2.2.2. Upload Files](#222-upload-files)
     - [2.2.3. Using the Documents API and BCF API Together](#223-using-the-documents-api-and-bcf-api-together)
       - [2.2.3.1. BCF File References](#2231-bcf-file-references)
-    - [2.2.4. Automatic syncing of documents between two or more CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
+    - [2.2.4. Automatic Syncing of Documents Between Two or More CDEs](#224-automatic-syncing-of-documents-between-two-or-more-cdes)
 - [3. Services](#3-services)
   - [3.1. Open API (Swagger) Specification - The Single Source of Truth](#31-open-api-swagger-specification---the-single-source-of-truth)
     - [3.1.1. Open Source Example](#311-open-source-example)
@@ -75,7 +75,7 @@ The foundation API specifies a small number of services and a few conventions th
 The Documents API identifies the following actors:
 
 - User - A human, performing a task requiring the download or the upload of files
-- Client Application - A desktop Application or a Web Application used by the User to perform her task
+- Client Application - A desktop application or a web application used by the User to perform her task
 - Common Data Environment (CDE or Server) - A cloud application hosting files for a construction project
 
 <p align="center">
@@ -98,13 +98,13 @@ The User, using the Client Application searches for files on the CDE's web UI an
   <img src="Images/download-storyboard.png">
 </p>
 
-#### 2.2.1.1. Automatic download of a file previously uploaded or downloaded
+#### 2.2.1.1. Automatic Download of a File Previously Uploaded or Downloaded
 
 The Client Application detects, using previously stored information, that new document versions exists. The Client Application obtains the User's approval and downloads the new versions and makes the files available to the User.
 
 ### 2.2.2. Upload Files
 
-The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the required document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The uUer can continue using the Client Application while the files are uploaded in the background.
+The User, using the Client Application, selects local files to upload to the CDE. The Client Application directs the user to the CDE Web UI where the user enters, for each file, the required document metadata as required by the CDE. The Client Application then uploads the files to the CDE. The CDE combines the files with the user-entered metadata and registers new document versions. The User can continue using the Client Application while the files are uploaded in the background.
 
 <p align="center">
   <img src="Images/upload-storyboard.png">
@@ -141,7 +141,7 @@ In the example above, the CDE returns a value of `open-cde-documents://<document
 
 The BCF API section about project file references can be found here: <https://github.com/buildingSMART/BCF-API#331-get-project-files-information-service>
 
-### 2.2.4. Automatic syncing of documents between two or more CDEs
+### 2.2.4. Automatic Syncing of Documents Between Two or More CDEs
 
 This use case is not yet supported. It will be added in the future.
 
@@ -149,8 +149,8 @@ This use case is not yet supported. It will be added in the future.
 
 ## 3.1. Open API (Swagger) Specification - The Single Source of Truth
 
-Documents API is specified using [Open API](https://www.openapis.org/). You can find the Open API specification [here](swagger.yaml). The specification can be used to automatically generate client and server code, although most of the endpoints will not work directly, since the API is built with few fixed endpoints. Most of the endpoints are discovered and received in the returned payloads of the calls. The dynamic endpoints start with `server-provided-path-`.
-The motivation for using dynamic endpoints is to make the implementation of the API on the server easy and efficient. For example, when a link to download a document is retrieved from the service, that link can point to an already existing API end point, or event to a third parth file hosting service.
+Documents API is specified using [Open API](https://www.openapis.org/). [You can find the Open API specification here](swagger.yaml). The specification can be used to automatically generate client and server code, although most of the endpoints will not work directly, since the API is built with few fixed endpoints. Most of the endpoints are discovered and received in the returned payloads of the calls. The dynamic endpoints start with `server-provided-path-`.
+The motivation for using dynamic endpoints is to make the implementation of the API on the server easy and efficient. For example, when a link to download a document is retrieved from the service, that link can point to an already existing API end point, or even to a third party storage or file hosting service.
 
 The Open API specification is the single source of truth for implementing the Documents API. This documentation is supporting material that clarifies different workflows. If there are any contradictions between this document and the Open API specification, the latter prevails.
 
@@ -203,7 +203,7 @@ The server returns a response to inform the client about the `selected_documents
 
 The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
 Here, the user is seeing the native CDE UI, which they use to search for and select documents. After the user has done the selection, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this download session, e.g. `http://localhost:8080/cde-callback-example?selected_documents_url=https%3A%2F%2Fcde.example.com%2Fdownload-instructions%3Fsession_id%3Db59dab23-79a4-4e66-a1a7-8837871604fa`.  
-In the example, the browser is being redirect to the local callback url for the client, and transports the url of the endpoint in the `selected_documents_url` query parameter, in this case with a value of `https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa`. Please note that the actual value is url encoded.
+In the example, the browser is being redirected to the local callback url for the client, and transports the url of the endpoint in the `selected_documents_url` query parameter, in this case with a value of `https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa`. Please note that the actual value is url encoded.
 
 > Note: Most CDEs use a direct login link with the `selected_documents_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
 
@@ -270,7 +270,7 @@ The `documents` array contains a list of all the document version objects that t
 
 #### 3.3.1.1. Multipart Upload Considerations & Implementation Notes
 
-Uploading documents to CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional meta data that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
+Uploading documents to a CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional metadata that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
 
 #### 3.3.1.2. Identifying Files During the Workflow
 
@@ -328,7 +328,7 @@ The server returns a response to inform the client about the `upload_ui_url` whi
 
 The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
 Here, the user is seeing the native CDE UI, and they need to enter necessary information for the file to be uploaded. After the user has prepared the document data, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this upload session, e.g. `http://localhost:8080/cde-callback-example?upload_documents_url=https%3A%2F%2Fcde.example.com%2Fupload-instructions%3Fupload_session%3Dee56b8f3-8f93-4819-976e-46a45a5a996f`.  
-In the example, the browser is being redirect to the local callback url for the client, and transports the url of the endpoint in the `upload_documents_url` query parameter, in this case with a value of `https://cde.example.com/upload-instructions?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`. Please note that the actual value is url encoded.
+In the example, the browser is being redirected to the local callback url for the client, and transports the url of the endpoint in the `upload_documents_url` query parameter, in this case with a value of `https://cde.example.com/upload-instructions?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`. Please note that the actual value is url encoded.
 
 > Note: Most CDEs use a direct login link with the `upload_ui_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
 
