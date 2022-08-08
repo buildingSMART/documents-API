@@ -170,6 +170,8 @@ There is an [open source example project](https://github.com/Dangl-IT/Dangl.Open
 
 ##### 3.2.1.1.1. Initiating Download
 
+The client must authenticate the user before initiating download. 
+
 The client initiates the document selection by sending a POST request to the CDEs _/select-documents_ endpoint.  
 The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `server_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
 The `supported_file_extensions` is an optional array where the client specifies that the CDE should limit the user to select only files with the extensions `.ifc` or `.ifczip`.
@@ -291,6 +293,8 @@ The reason why the file size is sent only after the metadata has been entered in
 #### 3.3.2.2. Step-by-Step Example
 
 ##### 3.3.2.2.1. Initiating Upload
+
+The client must authenticate the user before initiating upload. 
 
 The client initiates the document upload by sending a POST request to the CDEs _/upload-documents_ endpoint.  
 The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `server_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
