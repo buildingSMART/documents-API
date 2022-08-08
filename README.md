@@ -274,7 +274,7 @@ The `documents` array contains a list of the document versions that the user has
 | `document_version`          | This url points to the object itself                                                                                                           |
 | `document_version_metadata` | The metadata for document versions is a list of key-value pairs                                                                                |
 | `document_version_download` | The url to download the binary content of this document version. May either directly return the result or redirect to a storage provider       |
-| `document_versions`         | This url returns a list of all document versions for the parent document. The client can user this URL to monitor for new document versions                                                                      |
+| `document_versions`         | This url returns a list of all document versions for the parent document. The client can use this URL to monitor for new document versions                                                                      |
 | `document_details`          | This optional url points to the CDE UI itself, meaning it can be opened by the local browser to show the document version in the native CDE UI |
 
 ## 3.3. Document Upload
