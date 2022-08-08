@@ -36,6 +36,7 @@ The Open CDE workgroup develops the Documents API standard. The group meets ever
       - [3.2.1.1. Step-by-Step Example](#3211-step-by-step-example)
         - [3.2.1.1.1. Initiating Download](#32111-initiating-download)
         - [3.2.1.1.2. CDE Selection Response](#32112-cde-selection-response)
+          - [3.2.1.1.2.1. Security Considerations](#321121-security-considerations)
         - [3.2.1.1.3. User Selects Documents in CDE UI](#32113-user-selects-documents-in-cde-ui)
         - [3.2.1.1.4. Client Queries Document Versions](#32114-client-queries-document-versions)
   - [3.3. Document Upload](#33-document-upload)
@@ -48,6 +49,7 @@ The Open CDE workgroup develops the Documents API standard. The group meets ever
       - [3.3.2.2. Step-by-Step Example](#3322-step-by-step-example)
         - [3.3.2.2.1. Initiating Upload](#33221-initiating-upload)
         - [3.3.2.2.2. CDE Upload Response](#33222-cde-upload-response)
+          - [3.3.2.2.2.1. Security Considerations](#332221-security-considerations)
         - [3.3.2.2.3. User Enters File Data in CDE UI](#33223-user-enters-file-data-in-cde-ui)
         - [3.3.2.2.4. Client Queries Upload Instructions](#33224-client-queries-upload-instructions)
         - [3.3.2.2.5. Binary File Upload](#33225-binary-file-upload)
@@ -192,7 +194,7 @@ Body:
 
 ##### 3.2.1.1.2. CDE Selection Response
 
-The server returns a response to inform the client about the `selected_documents_url` which should be opened in a local web browser. The `expires_in` property specifies how long this link will be valid.
+The server returns a response to inform the client about the `selected_documents_url` which should be opened in a local web browser. The `expires_in` property specifies the URL's validity, in seconds.
 
 ```json
 {
@@ -200,6 +202,10 @@ The server returns a response to inform the client about the `selected_documents
   "expires_in": 60
 }
 ```
+
+###### 3.2.1.1.2.1. Security Considerations
+
+It is highly recommended for CDEs to ensure that `selected_documents_url` is a short-lived, single-use and random URL. The URL should expire after its first use and in close proximity to the CDE response. There should be no pattern that would allow an attacker to guess and exploit a valid URL.  
 
 ##### 3.2.1.1.3. User Selects Documents in CDE UI
 
@@ -325,6 +331,9 @@ The server returns a response to inform the client about the `upload_ui_url` whi
   "max_size_in_bytes": 1073741824
 }
 ```
+###### 3.3.2.2.2.1. Security Considerations
+
+It is highly recommended for CDEs to ensure that `upload_ui_url` is a short-lived, single-use and random URL. The URL should expire after its first use and in close proximity to the CDE response. There should be no pattern that would allow an attacker to guess and exploit a valid URL.  
 
 ##### 3.3.2.2.3. User Enters File Data in CDE UI
 
