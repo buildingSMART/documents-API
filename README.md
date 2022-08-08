@@ -221,7 +221,7 @@ In the example, the browser is being redirected to the local callback url for th
 
 ##### 3.2.1.1.4. Client Queries Document Versions
 
-After having received the callback from the CDE UI, the client now sends a request to get the document versions from the CDE.
+After having received the callback from the CDE UI, the client now sends a request to get the user selected documents from the CDE.
 
 ```
 GET https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa
@@ -265,15 +265,16 @@ Response:
 }
 ```
 
-The response returned from the server contains the optional `server_context` property, which can be used later to do a new selection or upload in the same context of the CDE.  
-The `documents` array contains a list of all the document version objects that the user has selected. Those elements contain some data about the documents themselves as well as `links` under which additional data can be obtained.
+The response returned from the server contains an optional `server_context` property, which the client can use in future selection or upload sessions as discussed [above](#32111-initiating-download).
+
+The `documents` array contains a list of the document versions that the user has selected. Each document version contain basic document metadata as well as `links` which the client can use to obtain additional information.
 
 | Link                        | Description                                                                                                                                    |
 | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `document_version`          | This url points to the object itself                                                                                                           |
 | `document_version_metadata` | The metadata for document versions is a list of key-value pairs                                                                                |
 | `document_version_download` | The url to download the binary content of this document version. May either directly return the result or redirect to a storage provider       |
-| `document_versions`         | This url returns a list of all document versions for the parent document                                                                       |
+| `document_versions`         | This url returns a list of all document versions for the parent document. The client can user this URL to monitor for new document versions                                                                      |
 | `document_details`          | This optional url points to the CDE UI itself, meaning it can be opened by the local browser to show the document version in the native CDE UI |
 
 ## 3.3. Document Upload
