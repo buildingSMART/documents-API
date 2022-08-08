@@ -36,6 +36,7 @@ The Open CDE workgroup develops the Documents API standard. The group meets ever
       - [3.2.1.1. Step-by-Step Example](#3211-step-by-step-example)
         - [3.2.1.1.1. Initiating Download](#32111-initiating-download)
         - [3.2.1.1.2. CDE Selection Response](#32112-cde-selection-response)
+          - [3.2.1.1.2.1. Security Considerations](#321121-security-considerations)
         - [3.2.1.1.3. User Selects Documents in CDE UI](#32113-user-selects-documents-in-cde-ui)
         - [3.2.1.1.4. Client Queries Document Versions](#32114-client-queries-document-versions)
   - [3.3. Document Upload](#33-document-upload)
@@ -48,6 +49,7 @@ The Open CDE workgroup develops the Documents API standard. The group meets ever
       - [3.3.2.2. Step-by-Step Example](#3322-step-by-step-example)
         - [3.3.2.2.1. Initiating Upload](#33221-initiating-upload)
         - [3.3.2.2.2. CDE Upload Response](#33222-cde-upload-response)
+          - [3.3.2.2.2.1. Security Considerations](#332221-security-considerations)
         - [3.3.2.2.3. User Enters File Data in CDE UI](#33223-user-enters-file-data-in-cde-ui)
         - [3.3.2.2.4. Client Queries Upload Instructions](#33224-client-queries-upload-instructions)
         - [3.3.2.2.5. Binary File Upload](#33225-binary-file-upload)
@@ -170,12 +172,16 @@ There is an [open source example project](https://github.com/Dangl-IT/Dangl.Open
 
 ##### 3.2.1.1.1. Initiating Download
 
-The client initiates the document selection by sending a POST request to the CDEs _/select-documents_ endpoint.  
-The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `server_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
+The client initiates the document selection by sending a POST request to the CDEs _/select-documents_ endpoint.
+
+In the `callback` part the client passes a URL unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080` and the callback URL will expire in 3600 seconds (one hour). 
+
+The client is using the optional `server_context` in this example to provide a guid value which was obtained, from the CDE, in a previous document exchange. The `server_context` informs the CDE of the user's previous activity (e.g. a "project" or a directory on the CDE). The CDE can use the `server_context` to resume the document selection session from where the user has last left. 
+
 The `supported_file_extensions` is an optional array where the client specifies that the CDE should limit the user to select only files with the extensions `.ifc` or `.ifczip`.
 
 ```json
-POST /upload-documents
+POST /select-documents
 Body:
 {
   "server_context": "711c0744-0a92-489f-8ca1-13813aa2dee7",
@@ -192,14 +198,18 @@ Body:
 
 ##### 3.2.1.1.2. CDE Selection Response
 
-The server returns a response to inform the client about the `selected_documents_url` which should be opened in a local web browser. The `expires_in` property specifies the URL's validity, in seconds.
+The server returns a response to inform the client about the `select_documents_url` which should be opened in a local web browser. The `expires_in` property specifies the URL's validity, in seconds.
 
 ```json
 {
-  "selected_documents_url": "https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
+  "select_documents_url": "https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
   "expires_in": 60
 }
 ```
+
+###### 3.2.1.1.2.1. Security Considerations
+
+It is highly recommended for CDEs to ensure that `select_documents_url` is a short-lived, single-use and random URL. The URL should expire after its first use and in close proximity to the CDE response. There should be no pattern that would allow an attacker to guess and exploit a valid URL.  
 
 ##### 3.2.1.1.3. User Selects Documents in CDE UI
 
@@ -221,7 +231,7 @@ In the example above, the browser was redirected to the local callback URL provi
 
 ##### 3.2.1.1.4. Client Queries Document Versions
 
-After having received the callback from the CDE UI, the client now sends a request to get the document versions from the CDE.
+After having received the callback from the CDE UI, the client now sends a request to get the user selected documents from the CDE.
 
 ```
 GET https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa
@@ -265,15 +275,16 @@ Response:
 }
 ```
 
-The response returned from the server contains the optional `server_context` property, which can be used later to do a new selection or upload in the same context of the CDE.  
-The `documents` array contains a list of all the document version objects that the user has selected. Those elements contain some data about the documents themselves as well as `links` under which additional data can be obtained.
+The response returned from the server contains an optional `server_context` property, which the client can use in future selection or upload sessions as discussed [above](#32111-initiating-download).
+
+The `documents` array contains a list of the document versions that the user has selected. Each document version contain basic document metadata as well as `links` which the client can use to obtain additional information.
 
 | Link                        | Description                                                                                                                                    |
 | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `document_version`          | This url points to the object itself                                                                                                           |
 | `document_version_metadata` | The metadata for document versions is a list of key-value pairs                                                                                |
 | `document_version_download` | The url to download the binary content of this document version. May either directly return the result or redirect to a storage provider       |
-| `document_versions`         | This url returns a list of all document versions for the parent document                                                                       |
+| `document_versions`         | This url returns a list of all document versions for the parent document. The client can use this URL to monitor for new document versions                                                                      |
 | `document_details`          | This optional url points to the CDE UI itself, meaning it can be opened by the local browser to show the document version in the native CDE UI |
 
 ## 3.3. Document Upload
@@ -335,6 +346,9 @@ The server returns a response to inform the client about the `upload_ui_url` whi
   "max_size_in_bytes": 1073741824
 }
 ```
+###### 3.3.2.2.2.1. Security Considerations
+
+It is highly recommended for CDEs to ensure that `upload_ui_url` is a short-lived, single-use and random URL. The URL should expire after its first use and in close proximity to the CDE response. There should be no pattern that would allow an attacker to guess and exploit a valid URL.  
 
 ##### 3.3.2.2.3. User Enters File Data in CDE UI
 
