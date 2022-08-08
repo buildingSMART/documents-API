@@ -192,7 +192,7 @@ Body:
 
 ##### 3.2.1.1.2. CDE Selection Response
 
-The server returns a response to inform the client about the `selected_documents_url` which should be opened in a local web browser. The `expires_in` property specifies how long this link will be valid.
+The server returns a response to inform the client about the `selected_documents_url` which should be opened in a local web browser. The `expires_in` property specifies the URL's validity, in seconds.
 
 ```json
 {
@@ -203,11 +203,21 @@ The server returns a response to inform the client about the `selected_documents
 
 ##### 3.2.1.1.3. User Selects Documents in CDE UI
 
-The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
-Here, the user is seeing the native CDE UI, which they use to search for and select documents. After the user has done the selection, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this download session, e.g. `http://localhost:8080/cde-callback-example?selected_documents_url=https%3A%2F%2Fcde.example.com%2Fdownload-instructions%3Fsession_id%3Db59dab23-79a4-4e66-a1a7-8837871604fa`.  
-In the example, the browser is being redirected to the local callback url for the client, and transports the url of the endpoint in the `selected_documents_url` query parameter, in this case with a value of `https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa`. Please note that the actual value is url encoded.
+The client has now opened the local browser with the URL `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
 
-> Note: Most CDEs use a direct login link with the `selected_documents_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
+Next, the user interacts with the native CDE UI to search and select documents. 
+
+After the user has completed the selection, the CDE redirects the user's browser to the client-provided `callback.url` and appends the `selected_documents_url` query parameter.
+
+```
+http://localhost:8080/cde-callback-example?selected_documents_url=https%3A%2F%2Fcde.example.com%2Fdownload-instructions%3Fsession_id%3Db59dab23-79a4-4e66-a1a7-8837871604fa
+```
+
+The value of the `selected_documents_url` query parameter is a URL on the CDE. The client will call this URL to get the details about the documents the user has selected in this download session.
+
+In the example above, the browser was redirected to the local callback URL provided by client and the value of the `selected_documents_url` query parameter is `https://cde.example.com/download-instructions?session_id=b59dab23-79a4-4e66-a1a7-8837871604fa`. Please note that the example is URL-encoded.
+
+> Note: It is recommended that CDEs provide a pre-authenticated URL with the `selected_documents_url` parameter, so that users can quickly select the documents they wish to download. The preauthenticated URL must retain the user identity associated with the OAuth2 token that was provided by the client when the download was initiated.
 
 ##### 3.2.1.1.4. Client Queries Document Versions
 
