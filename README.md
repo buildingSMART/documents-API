@@ -172,12 +172,16 @@ There is an [open source example project](https://github.com/Dangl-IT/Dangl.Open
 
 ##### 3.2.1.1.1. Initiating Download
 
-The client initiates the document selection by sending a POST request to the CDEs _/select-documents_ endpoint.  
-The `callback` part is specified by the client, and in `callback.url`, the client passes a url unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080`. The `server_context` in this example is using a guid value, which was obtained in a previous document exchange between this client and the CDE, to inform the CDE that a previous selection should be resumed.  
+The client initiates the document selection by sending a POST request to the CDEs _/select-documents_ endpoint.
+
+In the `callback` part the client passes a URL unto which to later redirect the user from the browser session. In this example, the client is listening locally on port `8080` and the callback URL will expire in 3600 seconds (one hour). 
+
+The client is using the optional `server_context` in this example to provide a guid value which was obtained, from the CDE, in a previous document exchange. The `server_context` informs the CDE of the user's previous activity (e.g. a "project" or a directory on the CDE). The CDE can use the `server_context` to resume the document selection session from where the user has last left. 
+
 The `supported_file_extensions` is an optional array where the client specifies that the CDE should limit the user to select only files with the extensions `.ifc` or `.ifczip`.
 
 ```json
-POST /upload-documents
+POST /select-documents
 Body:
 {
   "server_context": "711c0744-0a92-489f-8ca1-13813aa2dee7",
