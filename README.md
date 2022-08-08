@@ -198,18 +198,18 @@ Body:
 
 ##### 3.2.1.1.2. CDE Selection Response
 
-The server returns a response to inform the client about the `selected_documents_url` which should be opened in a local web browser. The `expires_in` property specifies the URL's validity, in seconds.
+The server returns a response to inform the client about the `select_documents_url` which should be opened in a local web browser. The `expires_in` property specifies the URL's validity, in seconds.
 
 ```json
 {
-  "selected_documents_url": "https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
+  "select_documents_url": "https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
   "expires_in": 60
 }
 ```
 
 ###### 3.2.1.1.2.1. Security Considerations
 
-It is highly recommended for CDEs to ensure that `selected_documents_url` is a short-lived, single-use and random URL. The URL should expire after its first use and in close proximity to the CDE response. There should be no pattern that would allow an attacker to guess and exploit a valid URL.  
+It is highly recommended for CDEs to ensure that `select_documents_url` is a short-lived, single-use and random URL. The URL should expire after its first use and in close proximity to the CDE response. There should be no pattern that would allow an attacker to guess and exploit a valid URL.  
 
 ##### 3.2.1.1.3. User Selects Documents in CDE UI
 
