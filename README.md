@@ -41,7 +41,7 @@ The Open CDE workgroup develops the Documents API standard. The group meets ever
         - [3.2.1.1.4. Client Queries Document Versions](#32114-client-queries-document-versions)
   - [3.3. Document Upload](#33-document-upload)
     - [3.3.1. Binary File Upload](#331-binary-file-upload)
-      - [3.3.1.1. Multipart Upload Considerations & Implementation Notes](#3311-multipart-upload-considerations--implementation-notes)
+      - [3.3.1.1. Multipart Upload Overview](#3311-multipart-upload-overview)
       - [3.3.1.2. Identifying Files During the Workflow](#3312-identifying-files-during-the-workflow)
       - [3.3.1.3. Why This Workflow](#3313-why-this-workflow)
     - [3.3.2. Document Upload Example](#332-document-upload-example)
@@ -281,9 +281,19 @@ The `documents` array contains a list of the document versions that the user has
 
 ### 3.3.1. Binary File Upload
 
-#### 3.3.1.1. Multipart Upload Considerations & Implementation Notes
+#### 3.3.1.1. Multipart Upload Overview
 
-Uploading documents to a CDE is the most complicated workflow in this API. The flow starts with presenting metadata (names and session ids) of the files to be uploaded to the server. After that, the user is presented with browser UI of the CDE, where they can enter any necessary additional metadata that the CDE deems necessary for the documents. When the user is finished entering the metadata a URL is sent to the callback of the client. The client sends a POST to this URL with additional information (size and session id per each file). As return to this call come the upload instructions detailing how each file should be uploaded to the CDE.
+The upload flow starts with the user selecting which files to upload to the CDE. 
+
+The client assigns each file a temporary unique id (session id) and then initiates the upload with the server providing the file names and session ids for each file. 
+
+After that, a local browser is launched and the user is presented with the web UI of the CDE, where they enter the document metadata as required by the CDE. 
+
+When the user is finished entering the metadata then the CDE, via a browser redirect, shares a callback URL with the client. 
+
+The client sends a POST to this URL with additional information (file sizes). The CDE responds with detailed upload instructions specifying the exact sequence of request the client should perform to upload each file to the CDE.
+
+The client proceeds to upload the files as specified by the CDE. When the upload is complete, the CDE provides the client with the document version information.  
 
 #### 3.3.1.2. Identifying Files During the Workflow
 
