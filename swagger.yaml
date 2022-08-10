@@ -457,11 +457,13 @@ components:
         server_context:
           type: string
           nullable: true
+          description: 'A CDE controlled identifier recording the user''s context on the CDE. For example which project and folder the user was on. If the client provides the `server_context` in subsequent calls then the CDE will attemp to load the UI at the same place.'
         documents_to_upload:
           type: array
           items:
             $ref: '#/components/schemas/DocumentToUpload'
     DocumentToUpload:
+      description: 'A specification for the request sequence required to upload a document to the CDE'
       type: object
       additionalProperties: false
       required:
@@ -473,11 +475,13 @@ components:
         session_file_id:
           type: string
           minLength: 1
+          description: 'A client-provided identifier that allows matching the specification with the correct file on the user''s machine'
         upload_file_parts:
           type: array
           minLength: 1
           items:
             $ref: '#/components/schemas/UploadFilePartInstruction'
+          description: 'An array of request specifications detailing how to split the file to parts and upload each part to the CDE'
         upload_completion:
           $ref: '#/components/schemas/LinkData'
         upload_cancellation:
@@ -496,6 +500,7 @@ components:
           type: integer
           format: int32
     Headers:
+      description: "An array of required HTTP headers"
       type: object
       required:
         - values
@@ -505,6 +510,7 @@ components:
           items:
             $ref: '#/components/schemas/HeaderValue'
     HeaderValue:
+      description: 'HTTP header descriptor'
       type: object
       required:
       - name
@@ -518,6 +524,7 @@ components:
           minLength: 1
     DocumentQuery:
       type: object
+      description: 'An array of document IDs to track'
       required:
         - document_ids
       properties:
