@@ -291,7 +291,7 @@ The `session_file_id` property used in the components (`FileToUpload`, `UploadFi
 
 #### 3.3.1.3. Providing the File Size
 
-The CDE requires the file size to generate a detailed request sequence for the client. The client sends the file size only after the user has enetered the document metadata in the CDE web UI. This supports the case when the client doesn't yet have the local file available when the upload workflow starts. 
+The CDE requires the file size to generate a detailed request sequence for the client. The client sends the file size only after the user has entered the document metadata in the CDE web UI. This supports the case when the client doesn't yet have the local file available when the upload workflow starts. 
 
 For example, when a CAD tool exports an IFC file to the server, creating the IFC can take a long time. With the chosen workflow, the CAD tool can create the IFC while the user is entering document metadata using the CDE web UI. 
 
