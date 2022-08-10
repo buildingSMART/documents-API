@@ -43,7 +43,7 @@ The Open CDE workgroup develops the Documents API standard. The group meets ever
     - [3.3.1. Binary File Upload](#331-binary-file-upload)
       - [3.3.1.1. Multipart Upload Overview](#3311-multipart-upload-overview)
       - [3.3.1.2. Identifying Files During the Workflow](#3312-identifying-files-during-the-workflow)
-      - [3.3.1.3. Why This Workflow](#3313-why-this-workflow)
+      - [3.3.1.3. Providing the File Size](#3313-providing-the-file-size)
     - [3.3.2. Document Upload Example](#332-document-upload-example)
       - [3.3.2.1. Sequence Diagram](#3321-sequence-diagram)
       - [3.3.2.2. Step-by-Step Example](#3322-step-by-step-example)
@@ -309,9 +309,11 @@ The client proceeds to upload the files as specified by the CDE. When the upload
 
 The `session_file_id` property used in the components (`FileToUpload`, `UploadFileDetails`, `DocumentToUpload`) related to uploading files is a client-generated identifier that is only used during upload. It doesn't need to be persisted between upload sessions. It is used to relate the information given in different phases of the workflow to the individual files that are being processed.
 
-#### 3.3.1.3. Why This Workflow
+#### 3.3.1.3. Providing the File Size
 
-The reason why the file size is sent only after the metadata has been entered in the CDE UI, is to support a use case, where the client software doesn't yet have the local file available when the upload workflow starts. For example, when a CAD tool would like to export an IFC file to the server. Creating that IFC file can take a long time. With the chosen workflow, the user interaction happens first, and only when the server knows all the necessary meta data, the client software can start creating the file, if it already doesn't exist, and uploading it. Since this process doesn't need interaction, it can happen in the background and doesn't need attention from the user.
+The CDE requires the file size to generate a detailed request sequence for the client. The client sends the file size only after the user has entered the document metadata in the CDE web UI. This supports the case when the client doesn't yet have the local file available when the upload workflow starts. 
+
+For example, when a CAD tool exports an IFC file to the server, creating the IFC can take a long time. With the chosen workflow, the CAD tool can create the IFC while the user is entering document metadata using the CDE web UI. 
 
 ### 3.3.2. Document Upload Example
 
