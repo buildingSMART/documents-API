@@ -353,11 +353,11 @@ Body:
 
 ##### 3.3.2.2.2. CDE Upload Response
 
-The server returns a response to inform the client about the `upload_ui_url` which should be opened in a local web browser. The `expires_in` property specifies how long this link will be valid, and the optional property `max_size_in_bytes` can be used to indicate if there is a file size limit for uploading.
+The server returns a response to inform the client about the `upload_ui_url` which should be opened in a local web browser. The `expires_in` property specifies the URL's validity, in seconds, and the optional property `max_size_in_bytes` can be used to indicate if there is a file size limit for uploading.
 
 ```json
 {
-  "upload_ui_url": "https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
+  "upload_ui_url": "https://cde.example.com/document-upload?upload_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247",
   "expires_in": 60,
   "max_size_in_bytes": 1073741824
 }
