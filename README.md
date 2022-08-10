@@ -50,7 +50,7 @@ The Open CDE workgroup develops the Documents API standard. The group meets ever
         - [3.3.2.2.1. Initiating Upload](#33221-initiating-upload)
         - [3.3.2.2.2. CDE Upload Response](#33222-cde-upload-response)
           - [3.3.2.2.2.1. Security Considerations](#332221-security-considerations)
-        - [3.3.2.2.3. User Enters File Data in CDE UI](#33223-user-enters-file-data-in-cde-ui)
+        - [3.3.2.2.3. User Enters Document Metadata in CDE UI](#33223-user-enters-document-metadata-in-cde-ui)
         - [3.3.2.2.4. Client Queries Upload Instructions](#33224-client-queries-upload-instructions)
         - [3.3.2.2.5. Binary File Upload](#33225-binary-file-upload)
         - [3.3.2.2.6. Upload Completion](#33226-upload-completion)
@@ -366,13 +366,23 @@ The server returns a response to inform the client about the `upload_ui_url` whi
 
 It is highly recommended for CDEs to ensure that `upload_ui_url` is a short-lived, single-use and random URL. The URL should expire after its first use and in close proximity to the CDE response. There should be no pattern that would allow an attacker to guess and exploit a valid URL.  
 
-##### 3.3.2.2.3. User Enters File Data in CDE UI
+##### 3.3.2.2.3. User Enters Document Metadata in CDE UI
 
-The client has now opened the local browser with the url `https://cde.example.com/document-selection?selection_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`.  
-Here, the user is seeing the native CDE UI, and they need to enter necessary information for the file to be uploaded. After the user has prepared the document data, the CDE redirects the users browser to the client-given `callback.url` and appends a query parameter to transport a url under which the client can get the details for this upload session, e.g. `http://localhost:8080/cde-callback-example?upload_documents_url=https%3A%2F%2Fcde.example.com%2Fupload-instructions%3Fupload_session%3Dee56b8f3-8f93-4819-976e-46a45a5a996f`.  
-In the example, the browser is being redirected to the local callback url for the client, and transports the url of the endpoint in the `upload_documents_url` query parameter, in this case with a value of `https://cde.example.com/upload-instructions?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`. Please note that the actual value is url encoded.
+The client has now opened the local browser with the url `https://cde.example.com/document-upload?upload_session=7c41c859-c0c1-4914-ac6c-8fbd50fb8247`. 
 
-> Note: Most CDEs use a direct login link with the `upload_ui_url`, so that users quickly get to enter the information required for the upload. The user identity is typically reused from the user identity associated with the OAuth2 token from the original client request.
+Next, the user enters document metadata using the native CDE UI.
+
+After the user has entered the document metadata, the CDE redirects the user's browser to the client-given `callback.url` and appends the `upload_documents_url` query parameter. 
+
+```
+http://localhost:8080/cde-callback-example?upload_documents_url=https%3A%2F%2Fcde.example.com%2Fupload-instructions%3Fupload_session%3Dee56b8f3-8f93-4819-976e-46a45a5a996f
+```
+
+The value of the `upload_documents_url` query parameter is a URL on the CDE. The client will call this URL to get upload instructions for each file.
+
+In the example above, the browser was redirected to the local callback URL provided by client and the value of the `upload_documents_url` query parameter is `https://cde.example.com/upload-instructions?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`. Please note that the example is URL-encoded.
+
+> Note: It is recommended that CDEs provide a pre-authenticated URL for the `upload_ui_url` parameter, so that users can quickly enter the metadata for the documents they wish to upload. The preauthenticated URL must retain the user identity associated with the OAuth2 token that was provided by the client when the upload was initiated.
 
 ##### 3.3.2.2.4. Client Queries Upload Instructions
 
