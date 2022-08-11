@@ -6,6 +6,8 @@ info:
 paths:
   /server-provided-path-document-metadata:
     get:
+      summary: 'Get document metadata for a single document'
+      operationId: /server-provided-path-document-metadata
       tags:
         - Download
       description: This endpoint returns the metadata for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_version_metadata\' property.
@@ -16,8 +18,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentMetadata'
+
   /server-provided-path-document-versions:
     get:
+      summary: 'Get the versions of a single document'
+      operationId: /server-provided-path-document-versions
       tags:
         - Download
       description: This endpoint returns the versions for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_versions\' property.
@@ -28,8 +33,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentVersions'
+          links:
+            /server-provided-path-document-metadata:
+              operationId: /server-provided-path-document-metadata
+              description: >
+                Use the `document_version_metadata` link to call the `getDocumentMetadata` operation
+                
   /server-provided-path-document-version:
     get:
+      summary: "Get the data for a single document version"
+      operationId: /server-provided-path-document-version
       tags:
         - Download
       description: This endpoint returns the document data for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_version\' property. Clients that need to monitor for new document versions may periodically poll this endpoint, but should honor the 'ETag' header. This endpoint should not be called more frequently than once every ten seconds per each distinct document url.
@@ -42,6 +55,8 @@ paths:
                 $ref: '#/components/schemas/DocumentVersion'
   /server-provided-path-selected-documents-url:
     get:
+      summary: 'Retrieve the user''s selection from the CDE' 
+      operationId: /server-provided-path-selected-documents-url
       tags:
         - Download
       description: This endpoint returns the document selection. The client retrieves its url via the callback url from the server after the selection has finished. The url of this endpoint is retrieved from the callback sent to the client in a query parameter named selected_documents_url. In case when the user cancels the selection on the CDE UI, this callback will still be called, but the selected_documents_url query parameter will not be present, instead the server will provide a query parameter called user_cancelled_selection=true.
@@ -54,6 +69,8 @@ paths:
                 $ref: '#/components/schemas/SelectedDocuments'
   /server-provided-path-upload-documents-url:
     post:
+      summary: 'Retrieve upload instructions after the user has entered document metadata on the CDE' 
+      operationId: /server-provided-path-upload-documents-url
       tags:
         - Upload
       description: This endpoint returns the document upload information. The client retrieves this url via the callback url from the server after the user's completion of the upload metadata entry. The url of this endpoint is retrieved from the callback sent to the client in a query parameter named upload_documents_url. In case when the user cancels the upload on the CDE UI, this callback will still be called, but the upload_documents_url query parameter will not be present, instead the server will provide a query parameter called user_cancelled_upload=true.
@@ -75,6 +92,8 @@ paths:
           description: 'This error may be returned if the file size exceeds the maximum length supported by the server.'
   /server-provided-path-document-upload-file:
     put:
+      summary: 'Upload a single file part' 
+      operationId: /server-provided-path-document-upload-file
       tags:
         - Upload
       description: This endpoint allows the client to upload the file content. The clients obtains this through the document upload information response.
@@ -89,6 +108,8 @@ paths:
           description: ''
   /server-provided-path-document-upload-completion:
     post:
+      summary: 'Complete a file upload after all the parts have been successfully uploaded' 
+      operationId: /server-provided-path-document-upload-completion
       tags:
         - Upload
       description: This endpoint must be called by the client when the file content upload has completed successfully. The clients obtains this through the document upload information response.
@@ -101,6 +122,8 @@ paths:
                 $ref: '#/components/schemas/DocumentVersion'
   /server-provided-path-document-upload-cancellation:
     post:
+      summary: 'Cancel the upload of a single file' 
+      operationId: /server-provided-path-document-upload-cancellation
       tags:
         - Upload
       description: This endpoint must be called by the client when the file content upload has been cancelled. The clients obtains this through the document upload information response.
@@ -109,6 +132,8 @@ paths:
           description: ''
   /select-documents:
     post:
+      summary: 'Initiate the select documents and download flow' 
+      operationId: /select-documents
       tags:
         - Download
       requestBody:
@@ -126,6 +151,8 @@ paths:
                 $ref: '#/components/schemas/DocumentDiscoverySessionInitialization'
   /upload-documents:
     post:
+      summary: 'Initiate the upload flow' 
+      operationId: /upload-documents
       tags:
         - Upload
       description: The body of this request contains a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters. After a document upload has been prepared, the CDE will issue a redirect to the provided callback url with a query parameter called `upload_documents_url`. By calling this url, the client can continue with the upload flow, it corresponds to the server specific location of `/server-provided-path-upload-documents-url`.
@@ -144,6 +171,8 @@ paths:
                 $ref: '#/components/schemas/DocumentUploadSessionInitialization'
   /document-versions:
     post:
+      summary: 'Query for the latest versions of multiple documents' 
+      operationId: /document-versions
       tags:
         - Query
       description: This endpoint must be called when querying the latest versions for multiple documents. It's an aggregate endpoint that should make periodic polling of a collection of documents easier. Servers must also support the ETag header for this endpoint, so clients may specifiy to receive a response object in case of changes on the server since the last query. It will return a list of DocumentVersion objects, where each DocumentVersion represents the latest version for each given document on the server.
@@ -334,6 +363,7 @@ components:
     FileDescription:
       type: object
       additionalProperties: false
+      description: 'Basic file information'
       required:
       - name
       - size_in_bytes
@@ -354,9 +384,11 @@ components:
         select_documents_url:
           type: string
           minLength: 1
+          description: 'A CDE UI URL for the client to open in a local browser. The user would search and select documents directly in the CDE'
         expires_in:
           type: integer
           format: int32
+          description: '`select_documents_url` expiry in seconds'
     SelectDocuments:
       type: object
       additionalProperties: false
@@ -395,9 +427,11 @@ components:
         size_in_bytes:
           type: integer
           format: int64
+          description: 'The uploaded file size'
         session_file_id:
           type: string
           minLength: 1
+          description: 'This is a client provided id to differentiate between multiple files that are being uploaded in the same session'
     UploadDocuments:
       type: object
       additionalProperties: false
@@ -410,6 +444,7 @@ components:
         server_context:
           type: string
           nullable: true
+          description:  'A CDE controlled identifier recording the user''s context on the CDE. For example which project and folder the user was on. If the client provides the `server_context` in subsequent calls then the CDE will attemp to load the UI at the same place.'
         files:
           type: array
           items:
