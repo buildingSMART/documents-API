@@ -18,7 +18,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentMetadata'
-
   /server-provided-path-document-versions:
     get:
       summary: 'Get the versions of a single document'
@@ -189,6 +188,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentQueryResult'
+          links:
+            /server-provided-path-document-version:
+              operationId: /server-provided-path-document-version
+              parameters: 
+                document_id: '$response.body#/document_id'
+              description: >
+                Use a previously received `document_id` to query for updates to the document 
 components:
   schemas:
     DocumentMetadata:
@@ -198,6 +204,7 @@ components:
       - metadata
       properties:
         metadata:
+          description: 'An array of metadata entries'
           type: array
           items:
             $ref: '#/components/schemas/DocumentMetadataEntry'
@@ -226,7 +233,7 @@ components:
             additional_headers:
               $ref: '#/components/schemas/Headers'
             include_authorization:
-              description: 'Whether or not to include the default authorization of the CDE in the file upload request'
+              description: 'Whether or not to include the authorization request header in the file upload request. Including the authorization header with some cloud storage providers might fail the request'
               type: boolean
               default: false
             multipart_form_data:
@@ -242,7 +249,7 @@ components:
     MultipartFormData:
       type: object
       additionalProperties: false
-      description: 'Please note, that if a server supplies custom data here to be used in multipart requests, it is very likely that the server will also have to set a custom Content-Type header with the multipart/form-data type and a server-provided boundary'
+      description: 'Multipart Form Data descriptor. If the CDE provided custom data here to be used in multipart requests then it is very likely that the CDE will also set a custom Content-Type header with the multipart/form-data type and a server-provided boundary'
       required:
         - prefix
         - suffix
@@ -256,6 +263,7 @@ components:
           type: string
           format: byte
     DocumentMetadataEntry:
+      description: 'A single document metadata property key-value pair'
       type: object
       additionalProperties: false
       required:
@@ -266,13 +274,16 @@ components:
         name:
           type: string
           minLength: 1
+          description: 'The name of the metadata property'
         value:
           type: array
+          description: 'The value of the metadata property, can be a list'
           items: 
             type: string
             minLength: 1
         data_type:
           type: string
+          description: 'The data type of the items in the value array'
           enum:
           - string
           - boolean
@@ -301,8 +312,10 @@ components:
         server_context:
           type: string
           nullable: true
+          description:  'A CDE controlled identifier recording the user''s context on the CDE. For example which project and folder the user was on. If the client provides the `server_context` in subsequent calls then the CDE will attemp to load the UI at the same place.'
         documents:
           type: array
+          description: 'An array containing all the documents selected by the user'
           items:
             $ref: '#/components/schemas/DocumentVersion'
     DocumentVersion:
@@ -335,11 +348,13 @@ components:
         title:
           type: string
           minLength: 1
+          description: 'A human readable code or identifier'
         file_description:
           $ref: '#/components/schemas/FileDescription'
         document_id:
           type: string
           minLength: 1
+          description: "A machine readable identifier that can be used to uniquely identify this version it future calls - see `Query` section"
     DocumentVersionLinks:
       type: object
       additionalProperties: false
@@ -348,7 +363,17 @@ components:
       - document_version_metadata
       - document_version_download
       - document_versions
-      description: 'The document_details property represents an url that should be opened in the system browser. It leads to a page on the CDE where users can view or edit document details'
+      description: > 
+         * __document_version__ is a self-URL that can be used for future retrieval of the document version information
+         
+         * __document_version_metadata__ is a URL for retrieving the metadata associated with this document version
+         
+         * __document_version_download__ is a URL for downloading the file backing this document version
+         
+         * __document_versions__ is a URL for retrieving all the versions of the document
+         
+         * __document_details__ is a URL that should be opened in the system browser. It leads to a page on the CDE where users can view or edit document details
+         
       properties:
         document_version:
           $ref: '#/components/schemas/LinkData'
@@ -400,6 +425,7 @@ components:
         server_context:
           type: string
           nullable: true
+          description:  'A CDE controlled identifier recording the user''s context on the CDE. For example which project and folder the user was on. If the client provides the `server_context` in subsequent calls then the CDE will attemp to load the UI at the same place.'
         supported_file_extensions:
           description: 'The client may optionally provide an array of accepted file extensions that should be opened during this flow. The CDE server UI should make an attempt to only show files matching these extensions to the user for the download selection or help the user in selecting the desired files. However, the server does not have to guarantee that only files matching the extensions will be selected. The extensions here must contain the dot separator.'
           example: [".ifc", ".ifczip"]
