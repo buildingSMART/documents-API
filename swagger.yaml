@@ -424,6 +424,7 @@ components:
         file_name:
           type: string
           minLength: 1
+          description: "The CDE UI will display this value to the User when entering document metadata"
         session_file_id:
           description: 'This is a client provided id to differentiate between multiple files that are being uploaded in the same session'
           type: string
@@ -431,6 +432,7 @@ components:
         document_id:
           type: string
           minLength: 1
+          description: "When present, indicates that this upload is a new version of an existing document"
     DocumentUploadSessionInitialization:
       type: object
       additionalProperties: false
@@ -442,12 +444,15 @@ components:
         upload_ui_url:
           type: string
           minLength: 1
+          description: 'A CDE UI URL for the client to open in a local browser. The user would enter document metadata directly in the CDE'
         expires_in:
           type: integer
           format: int32
+          description: '`upload_ui_url` expiry in seconds'
         max_size_in_bytes:
           type: integer
           format: int64
+          description: 'The maximum file size supported by the CDE. Attempts to upload a larger file will fail'
     DocumentsToUpload:
       type: object
       additionalProperties: false
@@ -496,9 +501,11 @@ components:
         url:
           type: string
           minLength: 1
+          description: 'A valid URL'
         expires_in:
           type: integer
           format: int32
+          description: 'The expiry period for the URL, in seconds'
     Headers:
       description: "An array of required HTTP headers"
       type: object
