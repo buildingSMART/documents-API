@@ -89,13 +89,23 @@ paths:
                 $ref: '#/components/schemas/DocumentsToUpload'
         400:
           description: 'This error may be returned if the file size exceeds the maximum length supported by the server.'
-  /server-provided-path-document-upload-file:
+  /server-provided-path-document-upload-part:
     put:
       summary: 'Upload a single file part' 
-      operationId: /server-provided-path-document-upload-file
+      description: > 
+        This endpoint allows the client to upload the content of a single file part.
+        
+        * The `/server-provided-path-upload-documents-url` operation provides the client with a list of part upload request specifications for each part
+        
+        * For each part, the method (put or post), headers and request body are specified
+        
+        * The client must upload all parts before proceeding to complete the upload
+        
+        * Parts can be uploaded concurrently and in any order
+        
+      operationId: /server-provided-path-document-upload-file-put
       tags:
-        - Upload
-      description: This endpoint allows the client to upload the file content. The clients obtains this through the document upload information response.
+      - Upload
       requestBody:
         content:
           application/octet-stream:
@@ -105,6 +115,52 @@ paths:
       responses:
         200:
           description: ''
+          links:
+            /server-provided-path-document-upload-completion:
+              operationId: /server-provided-path-document-upload-completion
+              description: >
+                This operation should be called when all the parts have been successfully uploaded         
+            /server-provided-path-document-upload-cancellation:
+              operationId: /server-provided-path-document-upload-cancellation
+              description: >
+                This operation should be called to cancel the upload        
+               
+    post:
+      summary: 'Upload a single file part' 
+      operationId: /server-provided-path-document-upload-file-post
+      tags:
+        - Upload
+      description: > 
+        This endpoint allows the client to upload the content of a single file part.
+        
+        * The `/server-provided-path-upload-documents-url` operation provides the client with a list of part upload request specifications for each part
+        
+        * For each part, the method (put or post), headers and request body are specified
+        
+        * The client must upload all parts before proceeding to complete the upload
+        
+        * Parts can be uploaded concurrently and in any order
+        
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        200:
+          description: ''    
+          links:
+            /server-provided-path-document-upload-completion:
+              operationId: /server-provided-path-document-upload-completion
+              description: >
+                This operation should be called when all the parts have been successfully uploaded         
+            /server-provided-path-document-upload-cancellation:
+              operationId: /server-provided-path-document-upload-cancellation
+              description: >
+                This operation should be called to cancel the upload        
+               
+          
   /server-provided-path-document-upload-completion:
     post:
       summary: 'Complete a file upload after all the parts have been successfully uploaded' 
