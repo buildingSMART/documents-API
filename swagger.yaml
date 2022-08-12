@@ -131,11 +131,15 @@ paths:
           description: ''
   /select-documents:
     post:
-      summary: 'Initiate the select documents and download flow' 
+      summary: 'Initiate document selection and download flow' 
       operationId: /select-documents
       tags:
         - Download
+      description: > 
+        The client will call this endpoint to initiate the flow of selecting and downloading documents. 
+        The body of this request contains a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters. After a document upload has been prepared, the CDE will issue a redirect to the provided callback url with a query parameter called upload_documents_url. By calling this url, the client can continue with the upload flow, it corresponds to the server specific location of /server-provided-path-upload-documents-url. 
       requestBody:
+        description: 'The body of this request contains a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters.'      
         content:
           application/json:
             schema:
@@ -143,19 +147,26 @@ paths:
         required: true
       responses:
         200:
-          description: ''
+          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to select and download documents'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentDiscoverySessionInitialization'
+          links:
+            /server-provided-path-selected-documents-url:
+              operationId: /server-provided-path-selected-documents-url
+              description: >
+                Once the user has completed selecting documents in the CDE UI, the CDE will append `?selected_documents_url=/server-provided-path-selected-documents-url` to the client's callback (see request) and provide it to the client via a browser redirect 
+                
   /upload-documents:
     post:
       summary: 'Initiate the upload flow' 
       operationId: /upload-documents
       tags:
         - Upload
-      description: The body of this request contains a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters. After a document upload has been prepared, the CDE will issue a redirect to the provided callback url with a query parameter called `upload_documents_url`. By calling this url, the client can continue with the upload flow, it corresponds to the server specific location of `/server-provided-path-upload-documents-url`.
+      description: 'The client will call this endpoint to initiate the flow of uploading documents to the CDE.' 
       requestBody:
+        description: 'The body of this request contains a list of files to upload and a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters.'
         content:
           application/json:
             schema:
@@ -163,18 +174,32 @@ paths:
         required: true
       responses:
         200:
-          description: ''
+          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to enter documents metadata'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentUploadSessionInitialization'
+          links:
+            /server-provided-path-upload-documents-url:
+              operationId: /server-provided-path-upload-documents-url
+              description: >
+                Once the user has completed entering document metadata in the CDE UI, the CDE will append `?upload_documents_url=/server-provided-path-upload-documents-url` to the client's callback (see request) and provide it to the client via a browser redirect 
+                
   /document-versions:
     post:
       summary: 'Query for the latest versions of multiple documents' 
       operationId: /document-versions
       tags:
         - Query
-      description: This endpoint must be called when querying the latest versions for multiple documents. It's an aggregate endpoint that should make periodic polling of a collection of documents easier. Servers must also support the ETag header for this endpoint, so clients may specifiy to receive a response object in case of changes on the server since the last query. It will return a list of DocumentVersion objects, where each DocumentVersion represents the latest version for each given document on the server.
+      description: This endpoint must be called when querying the latest versions for multiple documents. It's an aggregate endpoint that should make periodic polling of a collection of documents easier. 
+      parameters:
+        - in: header
+          name: If-None-Match
+          description: 'Clients may provide a previosuly received etag value to avoid receiving a response object if there were no changes since the last query'
+          schema:
+            type: string
+            format: etag_value
+          required: false
       requestBody:
         content:
           application/json:
@@ -183,7 +208,13 @@ paths:
         required: true
       responses:
         200:
-          description: ''
+          description: 'A list of DocumentVersion objects, where each DocumentVersion represents the latest version for each given document on the server.'
+          headers:
+            ETag:
+              schema:
+                type: string
+                format: etag_value
+              description: A unique identifier of the response that allows CDEs to save bandwidth and the clients to implement caching and avoid computation when the document versions haven't changed since the last query
           content:
             application/json:
               schema:
@@ -263,7 +294,7 @@ components:
           type: string
           format: byte
     DocumentMetadataEntry:
-      description: 'A single document metadata property key-value pair'
+      description: 'A single document metadata property - a key-value pair'
       type: object
       additionalProperties: false
       required:
@@ -422,6 +453,7 @@ components:
       properties:
         callback:
           $ref: '#/components/schemas/CallbackLink'
+          description: ''
         server_context:
           type: string
           nullable: true
@@ -562,7 +594,10 @@ components:
         url:
           type: string
           minLength: 1
-          description: 'A valid URL'
+          description: >
+           The server will web-browser-redirect to this URL once the user has completed 
+           selecting documents or entering documenet metadata on the CDE
+           
         expires_in:
           type: integer
           format: int32
