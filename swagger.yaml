@@ -174,7 +174,7 @@ paths:
         required: true
       responses:
         200:
-          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to enter documents metadata'
+          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to enter document metadata'
           content:
             application/json:
               schema:
@@ -453,7 +453,6 @@ components:
       properties:
         callback:
           $ref: '#/components/schemas/CallbackLink'
-          description: ''
         server_context:
           type: string
           nullable: true
