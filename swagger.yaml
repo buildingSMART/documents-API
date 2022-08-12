@@ -4,13 +4,112 @@ info:
   description: OpenCDE Documents API Specification
   version: '1.0'
 paths:
+  /select-documents:
+    post:
+      summary: 'Initiate document selection and download flow' 
+      operationId: /select-documents
+      tags:
+        - Download
+      description: > 
+        The client will call this endpoint to initiate the flow of selecting and downloading documents. 
+      requestBody:
+        description: 'The body of this request contains a callback URL to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters.'      
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectDocuments'
+        required: true
+      responses:
+        200:
+          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to select and download documents'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDiscoverySessionInitialization'
+          links:
+            /server-provided-path-selected-documents-url:
+              operationId: /server-provided-path-selected-documents-url
+              description: >
+                * Once the user has completed selecting documents in the CDE UI, the CDE will append `?selected_documents_url=/server-provided-path-selected-documents-url` to the client's callback (see request) and provide it to the client via a browser redirect.
+                
+                * IF the user has cancelled the download the the CDE server will append `?user_cancelled_selection=true` to the client's callback (see request) and provide it to the client via a browser redirect.
+
+  /server-provided-path-selected-documents-url:
+    get:
+      summary: 'Retrieve the user''s selection from the CDE' 
+      operationId: /server-provided-path-selected-documents-url
+      tags:
+        - Download
+      description: This endpoint returns the document selection. The client retrieves its URL via the callback URL from the CDE after the selection has finished from a query parameter named `selected_documents_url`. In case when the user cancels the selection on the CDE UI, this callback will still be called, but the `selected_documents_url` query parameter will not be present, instead the server will provide a query parameter called `user_cancelled_selection=true`.
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectedDocuments'
+          links:
+            /server-provided-path-document-download:
+              operationId: /server-provided-path-document-download
+              description: >
+                Use the `document_version_download` operation to download the file contents
+            /server-provided-path-document-metadata:
+              operationId: /server-provided-path-document-metadata
+              description: >
+                Use the `document_version_metadata` URL operation to retrieve document metadata                 
+                
+  /upload-documents:
+    post:
+      summary: 'Initiate the upload flow' 
+      operationId: /upload-documents
+      tags:
+        - Upload
+      description: 'The client will call this endpoint to initiate the flow of uploading documents to the CDE.' 
+      requestBody:
+        description: 'The body of this request contains a list of files to upload and a callback URL to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadDocuments'
+        required: true
+      responses:
+        200:
+          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to enter document metadata'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentUploadSessionInitialization'
+          links:
+            /server-provided-path-upload-documents-url:
+              operationId: /server-provided-path-upload-documents-url
+              description: >
+                * Once the user has completed entering document metadata in the CDE UI, the CDE will append `?upload_documents_url=/server-provided-path-upload-documents-url` to the client's callback (see request) and provide it to the client via a browser redirect 
+                
+                * IF the user has cancelled the download the the CDE server will append `?user_cancelled_selection=true` to the client's callback (see request) and provide it to the client via a browser redirect.
+
+
+  /server-provided-path-document-download:
+    get:
+      summary: 'Download the document'
+      operationId: /server-provided-path-document-download
+      tags:
+        - Download
+      description: Use this endpoint to download the document. Its URL is retrieved from the links object in the initial document selection response, with the `document_version_download` property.
+      responses:
+        200:
+          description: 'The file content'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
   /server-provided-path-document-metadata:
     get:
       summary: 'Get document metadata for a single document'
       operationId: /server-provided-path-document-metadata
       tags:
         - Download
-      description: This endpoint returns the metadata for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_version_metadata\' property.
+      description: This endpoint returns the metadata for a single document. Its URL is retrieved from the links object in the initial document selection response, with the `document_version_metadata` property.
       responses:
         200:
           description: ''
@@ -24,7 +123,7 @@ paths:
       operationId: /server-provided-path-document-versions
       tags:
         - Download
-      description: This endpoint returns the versions for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_versions\' property.
+      description: This endpoint returns the versions for a single document. Its URL is retrieved from the links object in the initial document selection response, with the `document_versions` property.
       responses:
         200:
           description: ''
@@ -33,18 +132,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/DocumentVersions'
           links:
-            /server-provided-path-document-metadata:
-              operationId: /server-provided-path-document-metadata
+            /document-versions:
+              operationId: /document-versions
+              parameters: 
+                document_id: '$response.body#..document_id'
               description: >
-                Use the `document_version_metadata` link to call the `getDocumentMetadata` operation
-                
+                Use the `document_id` to query for updates for this document 
+          
   /server-provided-path-document-version:
     get:
-      summary: "Get the data for a single document version"
+      summary: "Get the information for a single document version"
       operationId: /server-provided-path-document-version
       tags:
         - Download
-      description: This endpoint returns the document data for a single document. Its url is retrieved from the links object in the initial document selection response, with the \'document_version\' property. Clients that need to monitor for new document versions may periodically poll this endpoint, but should honor the 'ETag' header. This endpoint should not be called more frequently than once every ten seconds per each distinct document url.
+      description: This endpoint returns the document data for a single document. Its URL is retrieved from the links object in the initial document selection response, with the `document_version` property.
       responses:
         200:
           description: ''
@@ -52,29 +153,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentVersion'
-  /server-provided-path-selected-documents-url:
-    get:
-      summary: 'Retrieve the user''s selection from the CDE' 
-      operationId: /server-provided-path-selected-documents-url
-      tags:
-        - Download
-      description: This endpoint returns the document selection. The client retrieves its url via the callback url from the server after the selection has finished. The url of this endpoint is retrieved from the callback sent to the client in a query parameter named selected_documents_url. In case when the user cancels the selection on the CDE UI, this callback will still be called, but the selected_documents_url query parameter will not be present, instead the server will provide a query parameter called user_cancelled_selection=true.
-      responses:
-        200:
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SelectedDocuments'
+          links:
+            /document-versions:
+              operationId: /document-versions
+              parameters: 
+                document_id: '$response.body#..document_id'
+              description: >
+                Use the `document_id` to query for updates for this document 
+          
   /server-provided-path-upload-documents-url:
     post:
       summary: 'Retrieve upload instructions after the user has entered document metadata on the CDE' 
       operationId: /server-provided-path-upload-documents-url
       tags:
         - Upload
-      description: This endpoint returns the document upload information. The client retrieves this url via the callback url from the server after the user's completion of the upload metadata entry. The url of this endpoint is retrieved from the callback sent to the client in a query parameter named upload_documents_url. In case when the user cancels the upload on the CDE UI, this callback will still be called, but the upload_documents_url query parameter will not be present, instead the server will provide a query parameter called user_cancelled_upload=true.
+      description: This endpoint returns the document upload information. The client retrieves this URL via the callback URL from the server after the user's completion of the upload metadata entry from a query parameter named `upload_documents_url`. In case when the user cancels the upload on the CDE UI, this callback will still be called, but the `upload_documents_url` query parameter will not be present, instead the server will provide a query parameter called `user_cancelled_upload=true`.
       requestBody:
-        description: 'The client sends the list of files to be uploaded with this request. The file sizes are then used by the server to generate multiple upload parts, if required.'
+        description: 'The client sends the list of files to be uploaded with this request. The file sizes are then used by the server to break the file to multiple upload parts, as required.'
         content:
           application/json:
             schema:
@@ -87,17 +182,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentsToUpload'
+          links:
+            /server-provided-path-document-upload-file-part:
+              operationId: /server-provided-path-document-upload-part
+              description: >
+                This operation should be called for each part specified in this reponse          
+            /server-provided-path-document-upload-completion:
+              operationId: /server-provided-path-document-upload-completion
+              description: >
+                This operation should be called when all the parts have been successfully uploaded         
+            /server-provided-path-document-upload-cancellation:
+              operationId: /server-provided-path-document-upload-cancellation
+              description: >
+                This operation should be called to cancel the upload        
+                
         400:
           description: 'This error may be returned if the file size exceeds the maximum length supported by the server.'
-  /server-provided-path-document-upload-part:
+  /server-provided-path-document-upload-file-part:
     put:
       summary: 'Upload a single file part' 
       description: > 
-        This endpoint allows the client to upload the content of a single file part.
+        This endpoint allows the client to upload the content of a single file part. 
         
-        * The `/server-provided-path-upload-documents-url` operation provides the client with a list of part upload request specifications for each part
+        * The `/server-provided-path-upload-documents-url` operation specifies the list of part upload requests for each file
         
-        * For each part, the method (put or post), headers and request body are specified
+        * For each part, the URL, method (put or post), headers and request body are specified
         
         * The client must upload all parts before proceeding to complete the upload
         
@@ -127,20 +236,20 @@ paths:
                
     post:
       summary: 'Upload a single file part' 
-      operationId: /server-provided-path-document-upload-file-post
-      tags:
-        - Upload
       description: > 
         This endpoint allows the client to upload the content of a single file part.
         
-        * The `/server-provided-path-upload-documents-url` operation provides the client with a list of part upload request specifications for each part
+        * The `/server-provided-path-upload-documents-url` operation specifies the list of part upload requests for each file
         
-        * For each part, the method (put or post), headers and request body are specified
+        * For each part, the URL, method (put or post), headers and request body are specified
         
         * The client must upload all parts before proceeding to complete the upload
         
         * Parts can be uploaded concurrently and in any order
         
+      operationId: /server-provided-path-document-upload-file-post
+      tags:
+        - Upload
       requestBody:
         content:
           application/octet-stream:
@@ -167,7 +276,8 @@ paths:
       operationId: /server-provided-path-document-upload-completion
       tags:
         - Upload
-      description: This endpoint must be called by the client when the file content upload has completed successfully. The clients obtains this through the document upload information response.
+      description: > 
+        The `/server-provided-path-upload-documents-url` operation specifies the upload completion URL for each file. The upload completion endpoint must be called by the client when the file content upload has completed successfully. 
       responses:
         200:
           description: ''
@@ -181,73 +291,18 @@ paths:
       operationId: /server-provided-path-document-upload-cancellation
       tags:
         - Upload
-      description: This endpoint must be called by the client when the file content upload has been cancelled. The clients obtains this through the document upload information response.
+      description: > 
+        The `/server-provided-path-upload-documents-url` operation specifies the upload cancellation URL for each file. This endpoint must be called by the client when the file content upload has been cancelled. 
       responses:
         204:
           description: ''
-  /select-documents:
-    post:
-      summary: 'Initiate document selection and download flow' 
-      operationId: /select-documents
-      tags:
-        - Download
-      description: > 
-        The client will call this endpoint to initiate the flow of selecting and downloading documents. 
-        The body of this request contains a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters. After a document upload has been prepared, the CDE will issue a redirect to the provided callback url with a query parameter called upload_documents_url. By calling this url, the client can continue with the upload flow, it corresponds to the server specific location of /server-provided-path-upload-documents-url. 
-      requestBody:
-        description: 'The body of this request contains a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters.'      
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SelectDocuments'
-        required: true
-      responses:
-        200:
-          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to select and download documents'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DocumentDiscoverySessionInitialization'
-          links:
-            /server-provided-path-selected-documents-url:
-              operationId: /server-provided-path-selected-documents-url
-              description: >
-                Once the user has completed selecting documents in the CDE UI, the CDE will append `?selected_documents_url=/server-provided-path-selected-documents-url` to the client's callback (see request) and provide it to the client via a browser redirect 
-                
-  /upload-documents:
-    post:
-      summary: 'Initiate the upload flow' 
-      operationId: /upload-documents
-      tags:
-        - Upload
-      description: 'The client will call this endpoint to initiate the flow of uploading documents to the CDE.' 
-      requestBody:
-        description: 'The body of this request contains a list of files to upload and a callback url to the client, which is used later in the flow to communicate from the CDE server back to the client via query parameters.'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UploadDocuments'
-        required: true
-      responses:
-        200:
-          description: 'The CDE returns a URL for the client to open in a local browser. The user will then be presented with the CDE UI to enter document metadata'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DocumentUploadSessionInitialization'
-          links:
-            /server-provided-path-upload-documents-url:
-              operationId: /server-provided-path-upload-documents-url
-              description: >
-                Once the user has completed entering document metadata in the CDE UI, the CDE will append `?upload_documents_url=/server-provided-path-upload-documents-url` to the client's callback (see request) and provide it to the client via a browser redirect 
-                
   /document-versions:
     post:
       summary: 'Query for the latest versions of multiple documents' 
       operationId: /document-versions
       tags:
         - Query
-      description: This endpoint must be called when querying the latest versions for multiple documents. It's an aggregate endpoint that should make periodic polling of a collection of documents easier. 
+      description: This endpoint can be called when querying for the latest versions for multiple documents. It's an aggregate endpoint that should make periodic polling of a collection of documents easier. 
       parameters:
         - in: header
           name: If-None-Match
@@ -276,12 +331,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/DocumentQueryResult'
           links:
-            /server-provided-path-document-version:
-              operationId: /server-provided-path-document-version
-              parameters: 
-                document_id: '$response.body#/document_id'
+            /server-provided-path-document-versions:
+              operationId: /server-provided-path-document-versions
               description: >
-                Use a previously received `document_id` to query for updates to the document 
+                This operations allows listing all the versions of a document that has been flagged to have a new version in the response. 
 components:
   schemas:
     DocumentMetadata:
