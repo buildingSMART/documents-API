@@ -85,7 +85,7 @@ paths:
               description: >
                 * Once the user has completed entering document metadata in the CDE UI, the CDE will append `?upload_documents_url=/server-provided-path-upload-documents-url` to the client's callback (see request) and provide it to the client via a browser redirect 
                 
-                * IF the user has cancelled the download the the CDE server will append `?user_cancelled_selection=true` to the client's callback (see request) and provide it to the client via a browser redirect.
+                * If the user has cancelled the download the the CDE server will append `?user_cancelled_selection=true` to the client's callback (see request) and provide it to the client via a browser redirect.
 
 
   /server-provided-path-document-download:
