@@ -9,6 +9,8 @@
 
 The Documents API is designed to streamline the process of downloading and uploading files to a common data environment (CDE). This specification details the _selection_ or _discovery_, _download_ and _upload_ of files. When supported by both client and server, it provides an easy to use and integrated way of syncing cloud stored documents from within local applications. For the purpose of this specification, _a document_ consists of a file and its metadata. The scope of the Documents API includes all file types; the scope is not limited to building information models.
 
+Get a quick overview of the Documents API in [this video](https://www.youtube.com/watch?v=ftjnaIYz8tQ&t=42s&ab_channel=buildingSMARTInternational)
+
 ## Contributing
 
 The Open CDE workgroup develops the Documents API standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
