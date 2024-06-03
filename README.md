@@ -9,6 +9,8 @@
 
 The Documents API is designed to streamline the process of downloading and uploading files to a common data environment (CDE). This specification details the _selection_ or _discovery_, _download_ and _upload_ of files. When supported by both client and server, it provides an easy to use and integrated way of syncing cloud stored documents from within local applications. For the purpose of this specification, _a document_ consists of a file and its metadata. The scope of the Documents API includes all file types; the scope is not limited to building information models.
 
+Get a quick overview of the Documents API in [this video](https://www.youtube.com/watch?v=ftjnaIYz8tQ&t=42s&ab_channel=buildingSMARTInternational)
+
 ## Contributing
 
 The Open CDE workgroup develops the Documents API standard. The group meets every second Monday at 11am CET. To join the fortnightly meeting please email [opencde@buildingsmart.org](mailto:opencde@buildingsmart.org).
@@ -303,7 +305,9 @@ When the user is finished entering the metadata then the CDE, via a browser redi
 
 The client sends a POST to this URL with additional information (file sizes). The CDE responds with detailed upload instructions specifying the exact sequence of request the client should perform to upload each file to the CDE.
 
-The client proceeds to upload the files as specified by the CDE. When the upload is complete, the CDE provides the client with the document version information.  
+The client proceeds to upload the files as specified by the CDE. After all file parts are uploaded, the client will send the upload completion request. When the upload is complete, the CDE provides the client with the document version information.  
+
+It is highly recommended that for the upload completion request, the server periodically send a whitespace character back to the client to keep the connection from timing out, since upload completion call can take up to several minutes to respond depending on the size of the file uploaded.
 
 #### 3.3.1.2. Identifying Files During the Workflow
 
@@ -520,6 +524,8 @@ Body:
 ##### 3.3.2.2.6. Upload Completion
 
 After the client has successfully uploaded all binary parts of the document, the server must be notified via the upload completion endpoint. In this example, the url for this endpoint was returned as `https://cde.example.com/upload-completion?upload_session=ee56b8f3-8f93-4819-976e-46a45a5a996f`.
+
+Note that for long running upload completion requests, the server may periodically send back a whitespace character to keep the connection from timing out.
 
 The client just sends a `POST` request without a body to this endpoint and receives a `DocumentVersion` as response:
 
