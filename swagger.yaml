@@ -359,33 +359,36 @@ components:
           minLength: 1
     UploadFilePartInstruction:
       description: 'This model describes how a single part of a multipart file upload should be processed by the client. The upload links may only be valid for a specific time period, after which the links expire. Server vendors should make sure to have a reasonably long expiration date for clients to upload large files'
-      allOf:
-        - $ref: '#/components/schemas/LinkData'
-        - type: object
-          required:
-            - http_method
-            - content_range_start
-            - content_range_end
-          properties:
-            http_method:
-              type: string
-              enum: [POST, PUT]
-            additional_headers:
-              $ref: '#/components/schemas/Headers'
-            include_authorization:
-              description: 'Whether or not to include the authorization request header in the file upload request. Including the authorization header with some cloud storage providers might fail the request'
-              type: boolean
-              default: false
-            multipart_form_data:
-              $ref: '#/components/schemas/MultipartFormData'
-            content_range_start:
-              description: 'The inclusive, zero index based start for this part'
-              type: integer
-              format: int64
-            content_range_end:
-              description: 'The inclusive, zero index based end for this part'
-              type: integer
-              format: int64
+      type: object
+      additionalProperties: false
+      required:
+        - url
+        - http_method
+        - content_range_start
+        - content_range_end
+      properties:
+        url:
+          type: string
+          minLength: 1
+        http_method:
+          type: string
+          enum: [POST, PUT]
+        additional_headers:
+          $ref: '#/components/schemas/Headers'
+        include_authorization:
+          description: 'Whether or not to include the authorization request header in the file upload request. Including the authorization header with some cloud storage providers might fail the request'
+          type: boolean
+          default: false
+        multipart_form_data:
+          $ref: '#/components/schemas/MultipartFormData'
+        content_range_start:
+          description: 'The inclusive, zero index based start for this part'
+          type: integer
+          format: int64
+        content_range_end:
+          description: 'The inclusive, zero index based end for this part'
+          type: integer
+          format: int64
     MultipartFormData:
       type: object
       additionalProperties: false
